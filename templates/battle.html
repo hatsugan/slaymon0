@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Pokemon Battle</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
 </head>
 <body>
     <div class="container">
@@ -39,7 +40,7 @@
                 <a href="{{ url_for('move', move_index=loop.index0) }}">{{ move['name'] }}</a>
             {% endfor %}
         </div>
-        <div class="battle-log">
+        <div class="battle-log" id="battle-log">
             <h2>Battle Log</h2>
             <ul>
                 {% for entry in battle.log %}
