@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from game_engine import Pokemon, Battle, get_random_pokemon, pokemon_list
+from game_engine import Slay, Battle, get_random_slay, slay_list
 import logging
 
 # Configure logging
@@ -13,31 +13,33 @@ battle = None
 @app.route('/')
 def index():
     logger.debug("Index route hit")
-    return render_template('index.html', pokemon_list=pokemon_list)
+    return render_template('index.html', slay_list=slay_list)
 
-@app.route('/select/<int:pokemon_index>')
-def select_pokemon(pokemon_index):
+@app.route('/select/<int:slay_index>')
+def select_slay(slay_index):
     global battle
-    player_pokemon = pokemon_list[pokemon_index]
-    opponent_pokemon = get_random_pokemon()
-    while opponent_pokemon.name == player_pokemon.name:
-        opponent_pokemon = get_random_pokemon()
-    player_pokemon = Pokemon(
-        player_pokemon.name,
-        player_pokemon.max_health,
-        player_pokemon.attack,
-        player_pokemon.defense,
-        player_pokemon.speed,
-        player_pokemon.moves
+    player_slay = slay_list[slay_index]
+    opponent_slay = get_random_slay()
+    while opponent_slay.name == player_slay.name:
+        opponent_slay = get_random_slay()
+    player_slay = Slay(
+        player_slay.name,
+        player_slay.max_health,
+        player_slay.strength,
+        player_slay.hardness,
+        player_slay.toughness,
+        player_slay.speed,
+        player_slay.moves
     )
-    battle = Battle(player_pokemon, opponent_pokemon)
-    logger.debug(f"Selected {player_pokemon.name}, opponent is {opponent_pokemon.name}")
+    battle = Battle(player_slay, opponent_slay)
+    logger.debug(f"Selected {player_slay.name}, opponent is {opponent_slay.name}")
     return redirect(url_for('battle_view'))
 
 @app.route('/battle')
 def battle_view():
     logging.debug('Battle view route hit')
     return render_template('battle.html', player=battle.player, opponent=battle.opponent, battle=battle)
+
 @app.route('/move/<int:move_index>')
 def move(move_index):
     logging.debug('Move route hit with move index %d', move_index)
@@ -52,21 +54,22 @@ def rematch():
     global battle
     logger.debug("Rematch route hit")
     if battle:
-        player_pokemon = Pokemon(
-            battle.player_pokemon.name,
-            battle.player_pokemon.max_health,
-            battle.player_pokemon.attack,
-            battle.player_pokemon.defense,
-            battle.player_pokemon.speed,
-            battle.player_pokemon.moves
+        player_slay = Slay(
+            battle.player.name,
+            battle.player.max_health,
+            battle.player.strength,
+            battle.player.hardness,
+            battle.player.toughness,
+            battle.player.speed,
+            battle.player.moves
         )
-        opponent_pokemon = get_random_pokemon()
-        while opponent_pokemon.name == player_pokemon.name:
-            opponent_pokemon = get_random_pokemon()
-        battle = Battle(player_pokemon, opponent_pokemon)
-        logger.debug(f"Rematch: {battle.player_pokemon.name} vs {battle.opponent_pokemon.name}")
-        logger.debug(f"{battle.player_pokemon.name} starting health: {battle.player_pokemon.health}")
-        logger.debug(f"{battle.opponent_pokemon.name} starting health: {battle.opponent_pokemon.health}")
+        opponent_slay = get_random_slay()
+        while opponent_slay.name == player_slay.name:
+            opponent_slay = get_random_slay()
+        battle = Battle(player_slay, opponent_slay)
+        logger.debug(f"Rematch: {battle.player.name} vs {battle.opponent.name}")
+        logger.debug(f"{battle.player.name} starting health: {battle.player.health}")
+        logger.debug(f"{battle.opponent.name} starting health: {battle.opponent.health}")
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

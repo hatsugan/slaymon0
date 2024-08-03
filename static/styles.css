@@ -18,14 +18,14 @@ h1, h2, h3 {
     text-align: center;
 }
 
-.pokemon {
+.slay {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.pokemon p {
+.slay p {
     margin: 0;
 }
 
@@ -133,13 +133,13 @@ h1, h2, h3 {
     background-color: #218838;
 }
 
-.pokemon-list {
+.slay-list {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.pokemon-list a {
+.slay-list a {
     display: block;
     width: 100%;
     text-align: center;
@@ -151,6 +151,6 @@ h1, h2, h3 {
     border-radius: 8px;
 }
 
-.pokemon-list a:hover {
+.slay-list a:hover {
     background-color: #0056b3;
 }

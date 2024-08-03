@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Pokemon Battle</title>
+    <title>Simple Slay Battle</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>Pokemon Battle</h1>
-        <div class="pokemon">
+        <h1>Slay Battle</h1>
+        <div class="slay">
             <div>
                 <h2>{{ player.name }}</h2>
                 <p>Health:</p>
@@ -18,8 +18,9 @@
                     <div class="health" style="width: {{ player.health / player.max_health * 100 }}%;"></div>
                     <div class="health-text">{{ "%.1f" % player.health }}/{{ "%.1f" % player.max_health }}</div>
                 </div>
-                <p>Attack: {{ player.attack }}</p>
-                <p>Defense: {{ player.defense }}</p>
+                <p>Strength: {{ player.strength }}</p>
+                <p>Hardness: {{ player.hardness }}</p>
+                <p>Toughness: {{ player.toughness }}</p>
                 <p>Speed: {{ player.speed }}</p>
             </div>
             <div>
@@ -29,8 +30,9 @@
                     <div class="health" style="width: {{ opponent.health / opponent.max_health * 100 }}%;"></div>
                     <div class="health-text">{{ "%.1f" % opponent.health }}/{{ "%.1f" % opponent.max_health }}</div>
                 </div>
-                <p>Attack: {{ opponent.attack }}</p>
-                <p>Defense: {{ opponent.defense }}</p>
+                <p>Strength: {{ opponent.strength }}</p>
+                <p>Hardness: {{ opponent.hardness }}</p>
+                <p>Toughness: {{ opponent.toughness }}</p>
                 <p>Speed: {{ opponent.speed }}</p>
             </div>
         </div>

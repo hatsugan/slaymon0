@@ -5,13 +5,14 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-class Pokemon:
-    def __init__(self, name, health, attack, defense, speed, moves):
+class Slay:
+    def __init__(self, name, health, strength, hardness, toughness, speed, moves):
         self.name = name
         self.max_health = health
         self.health = health
-        self.attack = attack
-        self.defense = defense
+        self.strength = strength
+        self.hardness = hardness
+        self.toughness = toughness
         self.speed = speed
         self.moves = moves
 
@@ -19,14 +20,14 @@ class Pokemon:
         self.health -= damage
         if self.health < 0:
             self.health = 0
-        logger.debug(f"{self.name} takes {damage} damage, health is now {self.health}")
+        logger.debug(f"{self.name} takes {damage:.1f} damage, health is now {self.health:.1f}")
 
     def is_fainted(self):
         return self.health == 0
 
     def reset_health(self):
         self.health = self.max_health
-        logger.debug(f"{self.name} health reset to {self.health}")
+        logger.debug(f"{self.name} health reset to {self.health:.1f}")
 
 
 class Battle:
@@ -39,12 +40,12 @@ class Battle:
         self.log = []
 
     def calculate_damage(self, attacker, defender, move):
-        return (attacker.attack / defender.defense) * move['power']
+        return move['base_damage'] * 1.3161 ** (attacker.strength - defender.toughness)
 
     def player_turn(self, move_index):
         move = self.player.moves[move_index]
         damage = self.calculate_damage(self.player, self.opponent, move)
-        self.opponent.health = max(0, self.opponent.health - damage)
+        self.opponent.take_damage(damage)
         self.turn_log.append(f"<span class='move'>{self.player.name} used {move['name']} on {self.opponent.name}</span>")
         self.turn_log.append(f"<span class='damage'>{self.opponent.name} lost {damage:.1f} health</span>")
         self.turn = 'opponent'
@@ -52,7 +53,7 @@ class Battle:
     def opponent_turn(self):
         move = random.choice(self.opponent.moves)
         damage = self.calculate_damage(self.opponent, self.player, move)
-        self.player.health = max(0, self.player.health - damage)
+        self.player.take_damage(damage)
         self.turn_log.append(f"<span class='move'>{self.opponent.name} used {move['name']} on {self.player.name}</span>")
         self.turn_log.append(f"<span class='damage'>{self.player.name} lost {damage:.1f} health</span>")
         self.end_turn()
@@ -68,30 +69,29 @@ class Battle:
         return self.player.is_fainted() or self.opponent.is_fainted()
 
 
-
-
-
 # Example moves
-tackle = {'name': 'Tackle', 'power': 5}
-scratch = {'name': 'Scratch', 'power': 4}
-ember = {'name': 'Ember', 'power': 6}
-water_gun = {'name': 'Water Gun', 'power': 6}
+slash = {'name': 'Slash', 'base_damage': 5}
+smash = {'name': 'Smash', 'base_damage': 10}
+stab = {'name': 'Stab', 'base_damage': 5}
+bite = {'name': 'Bite', 'base_damage': 10}
 
 # Example Pokémon
-pokemon_list = [
-    Pokemon('Pikachu', 35, 55, 40, 90, [tackle, scratch]),
-    Pokemon('Charmander', 39, 52, 43, 65, [scratch, ember]),
-    Pokemon('Squirtle', 44, 48, 65, 43, [tackle, water_gun]),
-    Pokemon('Bulbasaur', 45, 49, 49, 45, [tackle, scratch])
+slay_list = [
+    Slay('Cutting Beetle', 30, 3, 3, 2, 10, [slash, bite]),
+    Slay('Hydrypt', 15, 1, 3, 1, 30, [stab]),
+    Slay('Hard Crab', 40, 3, 3, 2, 10, [smash]),
+    Slay('Soft Crab', 50, 3, 2, 3, 20, [smash]),
+    Slay('Spider', 15, 3, 3, 1, 20, [bite]),
 ]
 
-def get_random_pokemon():
-    random_pokemon = random.choice(pokemon_list)
-    return Pokemon(
-        random_pokemon.name,
-        random_pokemon.max_health,
-        random_pokemon.attack,
-        random_pokemon.defense,
-        random_pokemon.speed,
-        random_pokemon.moves
+def get_random_slay():
+    random_slay = random.choice(slay_list)
+    return Slay(
+        random_slay.name,
+        random_slay.max_health,
+        random_slay.strength,
+        random_slay.hardness,
+        random_slay.toughness,
+        random_slay.speed,
+        random_slay.moves
     )
