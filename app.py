@@ -20,8 +20,6 @@ def select_slay(slay_index):
     global battle
     player_slay = slay_list[slay_index]
     opponent_slay = get_random_slay()
-    while opponent_slay.name == player_slay.name:
-        opponent_slay = get_random_slay()
     player_slay = Slay(
         player_slay.name,
         player_slay.max_health,
@@ -44,18 +42,10 @@ def battle_view():
 def move(move_index):
     logging.debug('Move route hit with move index %d', move_index)
     if not battle.is_battle_over():
-        # Player's turn
         battle.player_turn(move_index)
-        # Check if opponent has fainted after player's turn
-        if not battle.is_battle_over():
-            # Opponent's turn
-            battle.opponent_turn()
-        # End the turn and log it
-        battle.end_turn()
+        battle.opponent_CPU()
+        battle.execute_round()
     return redirect(url_for('battle_view'))
-
-
-
 
 @app.route('/rematch')
 def rematch():
@@ -72,8 +62,6 @@ def rematch():
             battle.player.moves
         )
         opponent_slay = get_random_slay()
-        while opponent_slay.name == player_slay.name:
-            opponent_slay = get_random_slay()
         battle = Battle(player_slay, opponent_slay)
         logger.debug(f"Rematch: {battle.player.name} vs {battle.opponent.name}")
         logger.debug(f"{battle.player.name} starting health: {battle.player.health}")
