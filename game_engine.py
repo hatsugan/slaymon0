@@ -39,7 +39,19 @@ class Battle:
         self.log = []
 
     def calculate_damage(self, attacker, defender, move):
-        return move['base_damage'] * 1.3161 ** (attacker.strength - defender.toughness)
+
+        if move['modality'] == 'BLUNT':
+            factor = 1.3161 ** (attacker.strength - defender.toughness)
+        elif move['modality'] == 'CUT':
+            factor = (2/3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                      1/3 * (1.3161 ** (attacker.strength - defender.toughness)))
+        elif move['modality'] == 'PIERCE':
+            factor = (1/3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                      2/3 * (1.3161 ** (attacker.strength - defender.toughness)))
+        else:
+            factor = 1
+
+        return move['base_damage'] * factor
 
     def player_turn(self, move_index):
         move = self.player.moves[move_index]
@@ -69,14 +81,11 @@ class Battle:
 
 
 
-
-
-
 # Example moves
-slash = {'name': 'Slash', 'base_damage': 5}
-smash = {'name': 'Smash', 'base_damage': 10}
-stab = {'name': 'Stab', 'base_damage': 5}
-bite = {'name': 'Bite', 'base_damage': 10}
+slash = {'name': 'Slash', 'modality': 'CUT', 'base_damage': 5}
+smash = {'name': 'Smash', 'modality': 'BLUNT', 'base_damage': 10}
+stab = {'name': 'Stab', 'modality': 'PIERCE', 'base_damage': 5}
+bite = {'name': 'Bite', 'modality': 'PIERCE', 'base_damage': 10}
 
 # Example Pokémon
 slay_list = [
