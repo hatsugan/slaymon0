@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
     background-color: #ffffff;
     padding: 20px;
@@ -18,15 +18,26 @@ h1, h2, h3 {
     text-align: center;
 }
 
-.slay {
+.battle-section {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    align-items: flex-start;
 }
 
-.slay p {
-    margin: 0;
+.slay-card {
+    width: 250px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.slay-card img {
+    width: 240px;
+    height: 240px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 
 .health-bar {
@@ -55,17 +66,45 @@ h1, h2, h3 {
     color: black; /* Use black or a contrasting color for better visibility */
 }
 
-.moves {
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.stat {
+    background-color: #e0e0e0;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
+    width: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+.stat-label {
+    font-size: small;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: large;
+    font-weight: bold;
+}
+
+.moves {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
 .moves a {
     display: block;
-    width: 100%;
+    width: 80%;
     text-align: center;
-    background-color: #007bff;
+    background-color: #6492c4;
     color: white;
     padding: 10px;
     margin: 5px 0;
@@ -75,6 +114,14 @@ h1, h2, h3 {
 
 .moves a:hover {
     background-color: #0056b3;
+}
+
+.move {
+    background-color: #d7d7d7;
+    color: #000000;
+    padding: 5px;
+    margin: 2px 0;
+    border-radius: 8px;
 }
 
 .battle-log {
@@ -135,22 +182,79 @@ h1, h2, h3 {
 
 .slay-list {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.slay-item {
+    width: 180px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.slay-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.slay-item h2 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.slay-item p {
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+.slay-item .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.slay-item .stat {
+    background-color: #e0e0e0;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
+    width: 40px;
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.slay-list a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    margin: 5px 0;
-    text-decoration: none;
-    border-radius: 8px;
+.slay-item .stat-label {
+    font-size: small;
+    margin-bottom: 2px;
 }
 
-.slay-list a:hover {
-    background-color: #0056b3;
+.slay-item .stat-value {
+    font-size: large;
+    font-weight: bold;
+}
+
+.slay-item .moves {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.slay-item .move {
+    background-color: #6492c4;
+    color: white;
+    padding: 5px;
+    margin: 2px 0;
+    width: 80%;
+    border-radius: 8px;
 }

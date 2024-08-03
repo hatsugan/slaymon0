@@ -11,7 +11,33 @@
         <h1>Select Your Slay</h1>
         <div class="slay-list">
             {% for slay in slay_list %}
-                <a href="{{ url_for('select_slay', slay_index=loop.index0) }}">{{ slay.name }}</a>
+                <a href="{{ url_for('select_slay', slay_index=loop.index0) }}" class="slay-item">
+                    <img src="{{ url_for('static', filename='images/' + slay.image) }}" alt="{{ slay.name }}">
+                    <h2>{{ slay.name }}</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">STR</div>
+                            <div class="stat-value">{{ slay.strength }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">HAR</div>
+                            <div class="stat-value">{{ slay.hardness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">TOU</div>
+                            <div class="stat-value">{{ slay.toughness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">SPE</div>
+                            <div class="stat-value">{{ slay.speed }}</div>
+                        </div>
+                    </div>
+                    <div class="moves">
+                        {% for move in slay.moves %}
+                            <div class="move">{{ move['name'] }}</div>
+                        {% endfor %}
+                    </div>
+                </a>
             {% endfor %}
         </div>
     </div>

@@ -15,6 +15,10 @@ class Slay:
         self.toughness = toughness
         self.speed = speed
         self.moves = moves
+        self.image = self.generate_image_filename()
+
+    def generate_image_filename(self):
+        return f"{self.name.lower().replace(' ', '_')}.png"
 
     def take_damage(self, damage):
         self.health -= damage
