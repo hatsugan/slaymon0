@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Pokemon</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Pokemon</h1>
+        <div class="pokemon-list">
+            {% for pokemon in pokemon_list %}
+                <a href="{{ url_for('select_pokemon', pokemon_index=loop.index0) }}">{{ pokemon.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

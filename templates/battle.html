@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Pokemon Battle</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Pokemon Battle</h1>
+        <div class="pokemon">
+            <div>
+                <h2>{{ player.name }}</h2>
+                <p>Health: {{ player.health }}/{{ player.max_health }}</p>
+                <div class="health-bar">
+                    <div class="health" style="width: {{ player.health / player.max_health * 100 }}%;">{{ player.health }}</div>
+                </div>
+                <p>Attack: {{ player.attack }}</p>
+                <p>Defense: {{ player.defense }}</p>
+                <p>Speed: {{ player.speed }}</p>
+            </div>
+            <div>
+                <h2>{{ opponent.name }}</h2>
+                <p>Health: {{ opponent.health }}/{{ opponent.max_health }}</p>
+                <div class="health-bar">
+                    <div class="health" style="width: {{ opponent.health / opponent.max_health * 100 }}%;">{{ opponent.health }}</div>
+                </div>
+                <p>Attack: {{ opponent.attack }}</p>
+                <p>Defense: {{ opponent.defense }}</p>
+                <p>Speed: {{ opponent.speed }}</p>
+            </div>
+        </div>
+        <div class="moves">
+            <h3>Moves</h3>
+            {% for move in player.moves %}
+                <a href="{{ url_for('move', move_index=loop.index0) }}">{{ move['name'] }}</a>
+            {% endfor %}
+        </div>
+        {% if battle.is_battle_over() %}
+            <div class="result">
+                {% if player.is_fainted() %}
+                    <h2>You Lost!</h2>
+                {% else %}
+                    <h2>You Won!</h2>
+                {% endif %}
+                <a href="{{ url_for('rematch') }}" class="rematch">Rematch</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
