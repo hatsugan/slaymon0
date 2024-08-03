@@ -12,9 +12,10 @@
         <div class="pokemon">
             <div>
                 <h2>{{ player.name }}</h2>
-                <p>Health: {{ player.health }}/{{ player.max_health }}</p>
+                <p>Health:</p>
                 <div class="health-bar">
-                    <div class="health" style="width: {{ player.health / player.max_health * 100 }}%;">{{ player.health }}</div>
+                    <div class="health" style="width: {{ player.health / player.max_health * 100 }}%;"></div>
+                    <div class="health-text">{{ "%.1f" % player.health }}/{{ "%.1f" % player.max_health }}</div>
                 </div>
                 <p>Attack: {{ player.attack }}</p>
                 <p>Defense: {{ player.defense }}</p>
@@ -22,9 +23,10 @@
             </div>
             <div>
                 <h2>{{ opponent.name }}</h2>
-                <p>Health: {{ opponent.health }}/{{ opponent.max_health }}</p>
+                <p>Health:</p>
                 <div class="health-bar">
-                    <div class="health" style="width: {{ opponent.health / opponent.max_health * 100 }}%;">{{ opponent.health }}</div>
+                    <div class="health" style="width: {{ opponent.health / opponent.max_health * 100 }}%;"></div>
+                    <div class="health-text">{{ "%.1f" % opponent.health }}/{{ "%.1f" % opponent.max_health }}</div>
                 </div>
                 <p>Attack: {{ opponent.attack }}</p>
                 <p>Defense: {{ opponent.defense }}</p>
@@ -36,6 +38,14 @@
             {% for move in player.moves %}
                 <a href="{{ url_for('move', move_index=loop.index0) }}">{{ move['name'] }}</a>
             {% endfor %}
+        </div>
+        <div class="battle-log">
+            <h2>Battle Log</h2>
+            <ul>
+                {% for entry in battle.log %}
+                <li>{{ entry|safe }}</li>
+                {% endfor %}
+            </ul>
         </div>
         {% if battle.is_battle_over() %}
             <div class="result">

@@ -35,15 +35,24 @@ h1, h2, h3 {
     border-radius: 8px;
     overflow: hidden;
     margin: 5px 0;
+    position: relative;
 }
 
 .health {
     height: 20px;
     background-color: #76c7c0;
     border-radius: 8px;
+}
+
+.health-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     text-align: center;
-    color: white;
     line-height: 20px;
+    color: black; /* Use black or a contrasting color for better visibility */
 }
 
 .moves {
@@ -66,6 +75,41 @@ h1, h2, h3 {
 
 .moves a:hover {
     background-color: #0056b3;
+}
+
+.battle-log {
+    max-height: 200px; /* Set the desired height for the log */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.battle-log ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.battle-log li {
+    text-align: left;
+    margin: 5px 0;
+}
+
+.battle-log .turn-heading {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em; /* Slightly larger font size */
+}
+
+.battle-log .move {
+    font-weight: bold;
+}
+
+.battle-log .damage {
+    font-style: italic;
 }
 
 .result {

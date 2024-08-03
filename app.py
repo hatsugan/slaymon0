@@ -36,20 +36,14 @@ def select_pokemon(pokemon_index):
 
 @app.route('/battle')
 def battle_view():
-    global battle
-    logger.debug("Battle view route hit")
-    return render_template('battle.html', player=battle.player_pokemon, opponent=battle.opponent_pokemon, battle=battle)
-
+    logging.debug('Battle view route hit')
+    return render_template('battle.html', player=battle.player, opponent=battle.opponent, battle=battle)
 @app.route('/move/<int:move_index>')
 def move(move_index):
-    global battle
-    logger.debug(f"Move route hit with move index {move_index}")
-    if not battle.is_battle_over():
-        if battle.turn == 'player':
-            logger.debug("Player's turn")
-            battle.player_turn(move_index)
+    logging.debug('Move route hit with move index %d', move_index)
+    if battle.turn == 'player' and not battle.is_battle_over():
+        battle.player_turn(move_index)
         if not battle.is_battle_over():
-            logger.debug("Opponent's turn")
             battle.opponent_turn()
     return redirect(url_for('battle_view'))
 

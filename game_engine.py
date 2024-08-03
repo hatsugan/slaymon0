@@ -28,40 +28,48 @@ class Pokemon:
         self.health = self.max_health
         logger.debug(f"{self.name} health reset to {self.health}")
 
+
 class Battle:
-    def __init__(self, player_pokemon, opponent_pokemon):
-        self.player_pokemon = player_pokemon
-        self.opponent_pokemon = opponent_pokemon
-        self.turn = 'player' if player_pokemon.speed >= opponent_pokemon.speed else 'opponent'
-        logger.debug(f"Battle started: {self.player_pokemon.name} vs {self.opponent_pokemon.name}")
-        logger.debug(f"{self.player_pokemon.name} starting health: {self.player_pokemon.health}")
-        logger.debug(f"{self.opponent_pokemon.name} starting health: {self.opponent_pokemon.health}")
-
-    def player_turn(self, move_index):
-        if not self.is_battle_over():
-            move = self.player_pokemon.moves[move_index]
-            damage = self.calculate_damage(self.player_pokemon, self.opponent_pokemon, move)
-            self.opponent_pokemon.take_damage(damage)
-            logger.debug(f"{self.player_pokemon.name} uses {move['name']}, deals {damage} damage")
-            self.turn = 'opponent'
-            if self.is_battle_over():
-                logger.debug("Battle over after player's turn")
-
-    def opponent_turn(self):
-        if not self.is_battle_over():
-            move = random.choice(self.opponent_pokemon.moves)
-            damage = self.calculate_damage(self.opponent_pokemon, self.player_pokemon, move)
-            self.player_pokemon.take_damage(damage)
-            logger.debug(f"{self.opponent_pokemon.name} uses {move['name']}, deals {damage} damage")
-            self.turn = 'player'
-            if self.is_battle_over():
-                logger.debug("Battle over after opponent's turn")
+    def __init__(self, player, opponent):
+        self.player = player
+        self.opponent = opponent
+        self.turn_count = 0
+        self.turn = 'player'
+        self.turn_log = []
+        self.log = []
 
     def calculate_damage(self, attacker, defender, move):
-        return max(1, (attacker.attack + move['power']) - defender.defense)
+        return (attacker.attack / defender.defense) * move['power']
+
+    def player_turn(self, move_index):
+        move = self.player.moves[move_index]
+        damage = self.calculate_damage(self.player, self.opponent, move)
+        self.opponent.health = max(0, self.opponent.health - damage)
+        self.turn_log.append(f"<span class='move'>{self.player.name} used {move['name']} on {self.opponent.name}</span>")
+        self.turn_log.append(f"<span class='damage'>{self.opponent.name} lost {damage:.1f} health</span>")
+        self.turn = 'opponent'
+
+    def opponent_turn(self):
+        move = random.choice(self.opponent.moves)
+        damage = self.calculate_damage(self.opponent, self.player, move)
+        self.player.health = max(0, self.player.health - damage)
+        self.turn_log.append(f"<span class='move'>{self.opponent.name} used {move['name']} on {self.player.name}</span>")
+        self.turn_log.append(f"<span class='damage'>{self.player.name} lost {damage:.1f} health</span>")
+        self.end_turn()
+
+    def end_turn(self):
+        self.turn_count += 1
+        self.log.append(f"<div class='turn-heading'>Turn {self.turn_count}</div>")
+        self.log.extend(self.turn_log)
+        self.turn_log = []
+        self.turn = 'player'
 
     def is_battle_over(self):
-        return self.player_pokemon.is_fainted() or self.opponent_pokemon.is_fainted()
+        return self.player.is_fainted() or self.opponent.is_fainted()
+
+
+
+
 
 # Example moves
 tackle = {'name': 'Tackle', 'power': 5}
