@@ -35,7 +35,6 @@ class Battle:
         self.player = player
         self.opponent = opponent
         self.turn_count = 0
-        self.turn = 'player'
         self.turn_log = []
         self.log = []
 
@@ -48,7 +47,6 @@ class Battle:
         self.opponent.take_damage(damage)
         self.turn_log.append(f"<span class='move'>{self.player.name} used {move['name']} on {self.opponent.name}</span>")
         self.turn_log.append(f"<span class='damage'>{self.opponent.name} lost {damage:.1f} health</span>")
-        self.turn = 'opponent'
 
     def opponent_turn(self):
         move = random.choice(self.opponent.moves)
@@ -56,17 +54,22 @@ class Battle:
         self.player.take_damage(damage)
         self.turn_log.append(f"<span class='move'>{self.opponent.name} used {move['name']} on {self.player.name}</span>")
         self.turn_log.append(f"<span class='damage'>{self.player.name} lost {damage:.1f} health</span>")
-        self.end_turn()
 
     def end_turn(self):
-        self.turn_count += 1
-        self.log.append(f"<div class='turn-heading'>Turn {self.turn_count}</div>")
-        self.log.extend(self.turn_log)
-        self.turn_log = []
-        self.turn = 'player'
+        if self.turn_log:
+            self.turn_count += 1
+            self.log.append(f"<div class='turn-heading'>Turn {self.turn_count}</div>")
+            self.log.extend(self.turn_log)
+            self.turn_log = []
+        if not self.is_battle_over():
+            self.turn = 'player'
 
     def is_battle_over(self):
         return self.player.is_fainted() or self.opponent.is_fainted()
+
+
+
+
 
 
 # Example moves

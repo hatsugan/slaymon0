@@ -43,11 +43,19 @@ def battle_view():
 @app.route('/move/<int:move_index>')
 def move(move_index):
     logging.debug('Move route hit with move index %d', move_index)
-    if battle.turn == 'player' and not battle.is_battle_over():
+    if not battle.is_battle_over():
+        # Player's turn
         battle.player_turn(move_index)
+        # Check if opponent has fainted after player's turn
         if not battle.is_battle_over():
+            # Opponent's turn
             battle.opponent_turn()
+        # End the turn and log it
+        battle.end_turn()
     return redirect(url_for('battle_view'))
+
+
+
 
 @app.route('/rematch')
 def rematch():
