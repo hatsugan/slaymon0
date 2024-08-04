@@ -1,0 +1,6 @@
+name,modality,base_damage,base_healing
+Slash,CUT,5.0,
+Smash,BLUNT,10.0,
+Stab,PIERCE,5.0,
+Bite,PIERCE,10.0,
+Heal,HEAL,,2.0
