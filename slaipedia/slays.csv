@@ -1,6 +1,9 @@
-name,health,strength,hardness,toughness,speed,moves
-Cutting Beetle,30,3,4,2,15,"['Slash', 'Bite', 'Heal']"
-Hydrypt,15,1,3,1,30,"['Stab', 'Heal']"
-Hard Crab,40,3,4,2,10,"['Smash', 'Heal']"
-Soft Crab,50,3,2,3,20,"['Smash', 'Heal']"
-Spider,15,3,3,1,20,"['Bite', 'Heal']"
+name,max_health,strength,hardness,toughness,speed,moves,abilities
+Cutting Beetle,30,3,4,2,15,"['Bite', 'Tackle']","['Sharp Body']"
+Hydrypt,15,1,3,1,30,"['Jab', 'Stab']","['Point']"
+Hard Crab,40,3,4,2,10,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest']",[]
+Razor Crab,20,3,3,2,25,"['Strike', 'Jab', 'Slash', 'Tackle', 'Body Slam', 'Rest']","['Sharp Body', 'Blade']"
+Soft Crab,50,3,2,3,20,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest']",[]
+Spider,15,2,3,1,20,"['Jab', 'Bite']","['Fangs']"
+Tarantula,30,3,2,2,30,"['Strike', 'Jab', 'Bite']","['Fangs']"
+Blade Squid,35,2,1,1,35,"['Strike', 'Jab', 'Slash', 'Bite', 'Rest']","['Blade', 'Beak']"

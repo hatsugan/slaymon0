@@ -7,17 +7,9 @@ import pandas as pd
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def load_moves_from_csv(filepath):
-    moves_df = pd.read_csv(filepath)
-    return moves_df
-
 def convert_moves_to_dict(moves):
     # Ensure moves are converted to a list of dictionaries
     return [{'name': move} for move in moves]
-
-# Load the moves.csv from the 'slaipedia' directory
-moves_df = load_moves_from_csv('slaipedia/moves.csv')
-
 
 class Slay:
     def __init__(self, name, health, strength, hardness, toughness, speed, moves, abilities):
@@ -124,26 +116,28 @@ class Battle:
     def is_battle_over(self):
         return self.player.is_fainted() or self.opponent.is_fainted()
 
-# Example Slays
-slay_list = [
-    Slay('Cutting Beetle', 30, 3, 4, 2, 15,
-         ['Bite', 'Tackle'], ['Sharp Body']),
-    Slay('Hydrypt', 15, 1, 3, 1, 30,
-         ['Jab', 'Stab'], ['Point']),
-    Slay('Hard Crab', 40, 3, 4, 2, 10,
-         ['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest'], []),
-    Slay('Razor Crab', 20, 3, 3, 2, 25,
-         ['Strike', 'Jab', 'Slash', 'Tackle', 'Body Slam', 'Rest'],
-         ['Sharp Body', 'Blade']),
-    Slay('Soft Crab', 50, 3, 2, 3, 20,
-         ['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest'], []),
-    Slay('Spider', 15, 2, 3, 1, 20,
-         ['Jab', 'Bite'], ['Fangs']),
-    Slay('Tarantula', 30, 3, 2, 2, 30,
-         ['Strike', 'Jab', 'Bite'], ['Fangs']),
-    Slay('Blade Squid', 35, 2, 1, 1, 35,
-         ['Strike', 'Jab', 'Slash', 'Bite', 'Rest'], ['Blade', 'Beak']),
-]
+def load_slays_from_csv(filepath):
+    slays_df = pd.read_csv(filepath)
+    slays_list = []
+    for _, row in slays_df.iterrows():
+        moves = eval(row['moves'])
+        abilities = eval(row['abilities'])
+        slay = Slay(
+            row['name'],
+            row['max_health'],
+            row['strength'],
+            row['hardness'],
+            row['toughness'],
+            row['speed'],
+            moves,
+            abilities
+        )
+        slays_list.append(slay)
+    return slays_list
+
+# Load the moves.csv from the 'slaipedia' directory
+slay_list = load_slays_from_csv('slaipedia/slays.csv')
+
 
 def get_random_slay():
     random_slay = random.choice(slay_list)
