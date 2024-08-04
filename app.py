@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from game_engine import Slay, Battle, get_random_slay, slay_list
+from game_engine import Slay, Battle, get_random_slay, get_random_team, slay_list, Player
 from move_handler import MoveHandler
 import pandas as pd
 import logging
@@ -24,32 +24,32 @@ def index():
 def select_slay(slay_index):
     global battle
     player_slay = slay_list[slay_index]
-    opponent_slay = get_random_slay()
-    player_slay = Slay(
-        player_slay.name,
-        player_slay.max_health,
-        player_slay.strength,
-        player_slay.hardness,
-        player_slay.toughness,
-        player_slay.speed,
-        player_slay.moves,
-        player_slay.abilities
-    )
-    battle = Battle(player_slay, opponent_slay, move_handler)
-    logger.debug(f"Selected {player_slay.name}, opponent is {opponent_slay.name}")
+    player_team = get_random_team()
+    opponent_team = get_random_team()
+    player_team[0] = player_slay  # Ensure the selected Slay is part of the player's team
+    player = Player("Player", player_team)
+    opponent = Player("Opponent", opponent_team)
+    logging.debug(f"player 1 team is:")
+    for slay in player_team:
+        logging.debug(f"{slay.name}")
+    logging.debug(f"player 2 team is:")
+    for slay in opponent_team:
+        logging.debug(f"{slay.name}")
+    battle = Battle(player, opponent, move_handler)
+    logger.debug(f"Selected {player.active_slay.name}, opponent is {opponent.active_slay.name}")
     return redirect(url_for('battle_view'))
 
 @app.route('/battle')
 def battle_view():
     logging.debug('Battle view route hit')
-    return render_template('battle.html', player=battle.player, opponent=battle.opponent, battle=battle)
+    return render_template('battle.html', player=battle.player1.active_slay, opponent=battle.player2.active_slay, battle=battle)
 
 @app.route('/move/<int:move_index>')
 def move(move_index):
     logging.debug('Move route hit with move index %d', move_index)
     if not battle.is_battle_over():
-        battle.player_turn(move_index)
-        battle.opponent_CPU()
+        battle.player_turn(battle.player1, move_index)
+        battle.opponent_turn(battle.player2)
         battle.execute_round()
     return redirect(url_for('battle_view'))
 
@@ -58,23 +58,27 @@ def rematch():
     global battle
     logger.debug("Rematch route hit")
     if battle:
-        player_slay = Slay(
-            battle.player.name,
-            battle.player.max_health,
-            battle.player.strength,
-            battle.player.hardness,
-            battle.player.toughness,
-            battle.player.speed,
-            battle.player.moves,
-            battle.player.abilities
+        player_team = get_random_team()
+        logging.debug(f"player 1 team is{player_team}")
+        opponent_team = get_random_team()
+        logging.debug(f"player 2 team is{opponent_team}")
+        player_team[0] = Slay(
+            battle.player1.active_slay.name,
+            battle.player1.active_slay.max_health,
+            battle.player1.active_slay.strength,
+            battle.player1.active_slay.hardness,
+            battle.player1.active_slay.toughness,
+            battle.player1.active_slay.speed,
+            battle.player1.active_slay.moves,
+            battle.player1.active_slay.abilities
         )
-        opponent_slay = get_random_slay()
-        battle = Battle(player_slay, opponent_slay, move_handler)
-        logger.debug(f"Rematch: {battle.player.name} vs {battle.opponent.name}")
-        logger.debug(f"{battle.player.name} starting health: {battle.player.health}")
-        logger.debug(f"{battle.opponent.name} starting health: {battle.opponent.health}")
+        player = Player("Player", player_team)
+        opponent = Player("Opponent", opponent_team)
+        battle = Battle(player, opponent, move_handler)
+        logger.debug(f"Rematch: {battle.player1.active_slay.name} vs {battle.player2.active_slay.name}")
+        logger.debug(f"{battle.player1.active_slay.name} starting health: {battle.player1.active_slay.health}")
+        logger.debug(f"{battle.player2.active_slay.name} starting health: {battle.player2.active_slay.health}")
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
-

@@ -64,26 +64,40 @@ class Slay:
         self.moves = self.base_moves
         logger.debug(f"{self.name} reset completely")
 
+class Player:
+    def __init__(self, name, slays):
+        self.name = name
+        self.slays = slays
+        self.active_slay = slays[0]  # Start with the first Slay in the team
+
+    def set_active_slay(self, index):
+        if index < len(self.slays):
+            self.active_slay = self.slays[index]
+
+    def is_defeated(self):
+        return all(slay.is_fainted() for slay in self.slays)
 
 class Battle:
-    def __init__(self, player, opponent, move_handler):
-        self.player = player
-        self.opponent = opponent
+    def __init__(self, player1, player2, move_handler):
+        self.player1 = player1
+        self.player2 = player2
         self.round_count = 0
         self.round_log = []
         self.log = []
         self.move_handler = move_handler
+        self.player1_move = None
+        self.player2_move = None
 
     def slay_move(self, attacker, defender, move, attacker_prefix, defender_prefix):
         self.move_handler.slay_move(attacker, defender, move, attacker_prefix, defender_prefix, self.round_log)
 
-    def player_turn(self, move_index):
-        self.player_move = self.player.moves[move_index]
-        logging.debug(f"Player selected move: {self.player_move}")
+    def player_turn(self, player, move_index):
+        self.player1_move = player.active_slay.moves[move_index]
+        logging.debug(f"{player.name} selected move: {self.player1_move}")
 
-    def opponent_CPU(self):
-        self.opponent_move = random.choice(self.opponent.moves)
-        logging.debug(f"Opponent selected move: {self.opponent_move}")
+    def opponent_turn(self, opponent):
+        self.player2_move = random.choice(opponent.active_slay.moves)
+        logging.debug(f"{opponent.name} selected move: {self.player2_move}")
 
     def execute_round(self):
         self.round_log = []
@@ -91,16 +105,19 @@ class Battle:
         self.log.append(f"<div class='turn-heading'>Round {self.round_count}</div>")
         logging.info(f"------ ROUND {self.round_count} ------")
 
-        if self.player.speed >= self.opponent.speed:
-            self.log.append(f"Player's {self.player.name} is faster than Opponent's {self.opponent.name}")
-            self.slay_move(self.player, self.opponent, self.player_move, "Player's", "Opponent's")
-            if not self.opponent.is_fainted():
-                self.slay_move(self.opponent, self.player, self.opponent_move, "Opponent's", "Player's")
+        player_slay = self.player1.active_slay
+        opponent_slay = self.player2.active_slay
+
+        if player_slay.speed >= opponent_slay.speed:
+            self.log.append(f"{self.player1.name}'s {player_slay.name} is faster than {self.player2.name}'s {opponent_slay.name}")
+            self.slay_move(player_slay, opponent_slay, self.player1_move, f"{self.player1.name}'s", f"{self.player2.name}'s")
+            if not opponent_slay.is_fainted():
+                self.slay_move(opponent_slay, player_slay, self.player2_move, f"{self.player2.name}'s", f"{self.player1.name}'s")
         else:
-            self.log.append(f"Opponent's {self.opponent.name} is faster than Player's {self.player.name}")
-            self.slay_move(self.opponent, self.player, self.opponent_move, "Opponent's", "Player's")
-            if not self.player.is_fainted():
-                self.slay_move(self.player, self.opponent, self.player_move, "Player's", "Opponent's")
+            self.log.append(f"{self.player2.name}'s {opponent_slay.name} is faster than {self.player1.name}'s {player_slay.name}")
+            self.slay_move(opponent_slay, player_slay, self.player2_move, f"{self.player2.name}'s", f"{self.player1.name}'s")
+            if not player_slay.is_fainted():
+                self.slay_move(player_slay, opponent_slay, self.player1_move, f"{self.player1.name}'s", f"{self.player2.name}'s")
 
         self.end_round()
 
@@ -114,7 +131,20 @@ class Battle:
             self.turn = 'player'
 
     def is_battle_over(self):
-        return self.player.is_fainted() or self.opponent.is_fainted()
+        return self.player1.is_defeated() or self.player2.is_defeated()
+
+
+    def end_round(self):
+        if self.round_log:
+            self.log.extend(self.round_log)
+            self.round_log = []
+        if self.is_battle_over():
+            self.turn = 'over'
+        else:
+            self.turn = 'player'
+
+    def is_battle_over(self):
+        return self.player1.is_defeated() or self.player2.is_defeated()
 
 def load_slays_from_csv(filepath):
     slays_df = pd.read_csv(filepath)
@@ -151,3 +181,6 @@ def get_random_slay():
         random_slay.moves,
         random_slay.abilities
     )
+
+def get_random_team():
+    return random.sample(slay_list, 4)

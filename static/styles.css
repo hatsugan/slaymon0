@@ -136,6 +136,29 @@ h1, h2, h3 {
     background-color: #0056b3;
 }
 
+.switch-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.switch-button a {
+    display: block;
+    width: 80%;
+    text-align: center;
+    background-color: #bb7526;
+    color: white;
+    padding: 10px;
+    margin: 5px 0;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.switch-button a:hover {
+    background-color: #86541c;
+}
+
 .move {
     background-color: #d7d7d7;
     color: #000000;
