@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from game_engine import Slay, Battle, get_random_slay, get_random_team, slay_list, Player
 from move_handler import MoveHandler
 import pandas as pd
@@ -97,6 +97,12 @@ def rematch():
         logger.debug(f"{battle.player1.active_slay.name} starting health: {battle.player1.active_slay.health}")
         logger.debug(f"{battle.player2.active_slay.name} starting health: {battle.player2.active_slay.health}")
     return redirect(url_for('index'))
+
+@app.route('/moves_json')
+def get_moves():
+    # Convert DataFrame to dictionary
+    moves_dict = moves_df.to_dict(orient='records')
+    return jsonify(moves_dict)
 
 if __name__ == '__main__':
     app.run(debug=True)

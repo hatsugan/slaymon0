@@ -11,6 +11,7 @@ def convert_moves_to_dict(moves):
     # Ensure moves are converted to a list of dictionaries
     return [{'name': move} for move in moves]
 
+
 class Slay:
     def __init__(self, name, health, strength, hardness, toughness, speed, moves, abilities):
         self.name = name

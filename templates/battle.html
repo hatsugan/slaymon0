@@ -40,7 +40,7 @@
                     </div>
                     <div class="moves">
                         {% for move in player.moves_dict %}
-                            <a href="{{ url_for('move', move_index=loop.index0) }}">{{ move['name'] }}</a>
+                            <a href="{{ url_for('move', move_index=loop.index0) }}" data-description="{{ move['description'] }}" data-type="{{ move['type'] }}">{{ move['name'] }}</a>
                         {% endfor %}
                     </div>
                     <div class="switch-button">
@@ -92,7 +92,7 @@
                     </div>
                     <div class="moves_opponent">
                         {% for move in opponent.moves_dict %}
-                            <a>{{ move['name'] }}</a>
+                            <a data-description="{{ move['description'] }}" data-type="{{ move['type'] }}">{{ move['name'] }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -132,5 +132,7 @@
             </div>
         {% endif %}
     </div>
+
+    <div id="tooltip" class="tooltip"></div>
 </body>
 </html>
