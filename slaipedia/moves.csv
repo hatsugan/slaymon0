@@ -1,6 +1,8 @@
-name,modality,base_damage,base_healing
-Slash,CUT,5.0,
-Smash,BLUNT,10.0,
-Stab,PIERCE,5.0,
-Bite,PIERCE,10.0,
-Heal,HEAL,,2.0
+"name","type","description","self_direct_damage","target_direct_damage","self_healing","target_healing","self_blunt_damage","target_blunt_damage","self_cut_damage","target_cut_damage","self_pierce_damage","target_pierce_damage","self_condition","target_condition","total_max_target_raw_damage"
+"Tackle","DAMAGE","User flings self at target. Extra damage inflicted with certain armours.",0,0,0,0,5,5,0,5,0,5,"none","none",15
+"Strike","DAMAGE","User swings a limb at target. Extra damage inflicted with certain limbs.",0,0,0,0,0,5,0,5,0,5,"none","none",15
+"Jab","DAMAGE","User thrusts a limb at target. Extra damage inflicted with certain limbs.",0,0,0,0,0,5,0,5,0,5,"none","none",15
+"Bite","DAMAGE","User bites target.",0,0,0,0,0,5,0,0,0,5,"none","none",10
+"Slash","DAMAGE","User swings a blade at target.",0,0,0,0,0,0,0,10,0,0,"none","none",10
+"Stab","DAMAGE","User thrusts a point at target.",0,0,0,0,0,0,0,0,0,10,"none","none",10
+"Rest","HEAL","User rests for a turn.",0,0,10,0,0,0,0,0,0,0,"none","none",0

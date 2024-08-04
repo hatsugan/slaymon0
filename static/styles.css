@@ -93,6 +93,26 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
+.moves_opponent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.moves_opponent a {
+    display: block;
+    width: 80%;
+    text-align: center;
+    background-color: #b0c0d9;
+    color: #000000;
+    padding: 10px;
+    margin: 5px 0;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+
 .moves {
     display: flex;
     flex-direction: column;
@@ -125,7 +145,7 @@ h1, h2, h3 {
 }
 
 .battle-log {
-    max-height: 200px; /* Set the desired height for the log */
+    max-height: 300px; /* Set the desired height for the log */
     overflow-y: auto; /* Enable vertical scrolling */
     margin-top: 20px;
     padding: 10px;

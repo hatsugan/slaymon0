@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="moves">
-                    {% for move in player.moves %}
+                    {% for move in player.moves_dict %}
                         <a href="{{ url_for('move', move_index=loop.index0) }}">{{ move['name'] }}</a>
                     {% endfor %}
                 </div>
@@ -66,6 +66,11 @@
                         <div class="stat-label">S P E</div>
                         <div class="stat-value">{{ opponent.speed }}</div>
                     </div>
+                </div>
+                <div class="moves_opponent">
+                    {% for move in opponent.moves_dict %}
+                        <a>{{ move['name'] }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
