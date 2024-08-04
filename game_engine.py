@@ -54,9 +54,9 @@ class Slay:
         if self.health > self.max_health:
             self.health = self.max_health
         if damage >= 0:
-            logger.debug(f"{self.name} should take {damage:.1f} damage, health is now {self.health:.1f}")
+            logger.debug(f"{self.name} will take {damage:.1f} damage, health is now {self.health:.1f}")
         else:
-            logger.debug(f"{self.name} should heal {-damage:.1f} health")
+            logger.debug(f"{self.name} will heal {-damage:.1f} health")
 
     def is_fainted(self):
         return self.health == 0
@@ -84,13 +84,12 @@ class Battle:
         damage = move_df['target_direct_damage']
         move_name = move_df['name']
         attacker_abilities = attacker.abilities
-        print(attacker_abilities)
         defender_abilities = defender.abilities
 
         move_additional_cut_damage = False
         move_additional_pierce_damage = False
 
-        logging.debug(f"{move_name} damage being calculated.")
+        logging.debug(f"--- {move_name} damage being calculated ---")
 
         # Appendage attacks
         if move_name in ['Strike', 'Jab', 'Slash', 'Stab', 'Bludgeon']:
@@ -133,60 +132,103 @@ class Battle:
         if damage > 0:
             logging.debug(f"Move will do {damage:.1f} direct damage.")  # Direct Damage Log
         if move_df['target_blunt_damage'] > 0:  # Blunt Damage
-            damage += self.calc_damage_blunt(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage:.1f} blunt damage.")
+            blunt_damage = self.calc_damage_blunt(attacker, defender, move_df)
+            damage += blunt_damage
+            logging.debug(f"Move will do {blunt_damage:.1f} blunt damage.")
         if move_df['target_cut_damage'] > 0 and move_additional_cut_damage:  # Cut Damage
-            damage += self.calc_damage_cut(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage:.1f} cut damage.")
+            cut_damage = self.calc_damage_cut(attacker, defender, move_df)
+            damage += cut_damage
+            logging.debug(f"Move will do {cut_damage:.1f} cut damage.")
         if move_df['target_pierce_damage'] > 0 and move_additional_pierce_damage:  # Pierce Damage
-            damage += self.calc_damage_pierce(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage:.1f} pierce damage.")
+            pierce_damage = self.calc_damage_pierce(attacker, defender, move_df)
+            damage += pierce_damage
+            logging.debug(f"Move will do {pierce_damage:.1f} pierce damage.")
+
         return damage
 
 
-    def calc_damage_blunt(self, attacker, defender, move_df):
-        factor = 1.3161 ** (attacker.strength - defender.toughness)
-        return move_df['target_blunt_damage'] * factor
+    def calc_damage_blunt(self, attacker, defender, move_df, recoil=False):
+        if not recoil:  # Target Damage
+            base_damage = move_df['target_blunt_damage']
+            factor = 1.3161 ** (attacker.strength - defender.toughness)
+
+        else:  # Self Damage
+            base_damage = move_df['self_blunt_damage']
+            factor = 1.3161 ** (attacker.strength - attacker.toughness)
+
+        logging.debug(f"BLUNT - Factor: {factor:.1f}, Base Damage: {base_damage:.1f}, Resulting: {base_damage * factor:.1f}")
+        return base_damage * factor
 
 
-    def calc_damage_cut(self, attacker, defender, move_df):
-        if attacker.hardness - defender.hardness >= 0:
-            factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
-                  1 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
-        else:
-            factor = 0
-            logging.debug("Defender could not be pierced")
-        return move_df['target_cut_damage'] * factor
+    def calc_damage_cut(self, attacker, defender, move_df, recoil=False):
+        if not recoil:  # Target Damage
+            base_damage = move_df['target_cut_damage']
+            if attacker.hardness - defender.hardness >= 0:
+                factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                          1 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
+            else:
+                factor = 0
+                logging.debug("Defender could not be cut")
 
-    def calc_damage_pierce(self, attacker, defender, move_df):
-        if attacker.hardness - defender.hardness >= 2:
-            factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
-                      2 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
-        else:
-            factor = 0
-            logging.debug("Defender could not be pierced")
-        return move_df['target_pierce_damage'] * factor
+        else:  # Self Damage
+            base_damage = move_df['self_cut_damage']
+            if defender.hardness - attacker.hardness >= 0:
+                factor = (2 / 3 * (1.3161 ** (attacker.strength - attacker.toughness)) +
+                          1 / 3 * (1.3161 ** (attacker.strength - attacker.hardness)))
+            else:
+                factor = 0
+                logging.debug("Attacker was not cut by recoil")
+
+        logging.debug(f"CUT - Factor: {factor:.1f}, Base Damage: {base_damage:.1f}, Resulting: {base_damage * factor:.1f}")
+        return base_damage * factor
+
+    def calc_damage_pierce(self, attacker, defender, move_df, recoil=False):
+
+        if not recoil:  # Target Damage
+            base_damage = move_df['target_pierce_damage']
+            if attacker.hardness - defender.hardness >= 2:
+                factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                          2 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
+            else:
+                factor = 0
+                logging.debug("Defender could not be pierced")
+
+        else:  # Self Damage
+            base_damage = move_df['self_pierce_damage']
+            if defender.hardness - attacker.hardness >= 2:
+                factor = (1 / 3 * (1.3161 ** (attacker.strength - attacker.toughness)) +
+                          2 / 3 * (1.3161 ** (attacker.strength - attacker.hardness)))
+            else:
+                factor = 0
+                logging.debug("Attacker was not pierced by recoil")
+
+        logging.debug(f"PIERCE - Factor: {factor:.1f}, Base Damage: {base_damage:.1f}, Resulting: {base_damage * factor:.1f}")
+        return base_damage * factor
 
 
     def slay_move(self, attacker, defender, move, attacker_prefix, defender_prefix):
         move_df = moves_df.loc[moves_df['name'] == move].iloc[0]
 
-        hurt_self = False
+        recoil = False
 
         # Damage
         damage = self.calc_move_damage(attacker, defender, move_df)
         defender.take_damage(damage)
-        # Tackle Self Damage
+
+        # Self Damage
         if move_df['name'] in ['Tackle', 'Body Slam', 'Bludgeon']:
-            self_damage = self.calc_damage_blunt(defender, attacker, move_df)
+            recoil = True
+            logging.debug(f"Attacker will take recoil damage")
+            self_damage = self.calc_damage_blunt(attacker, defender, move_df, recoil)
             if 'Sharp Body' in defender.abilities:
+                logging.debug(f"Defender may cut reckless attacker")
                 self_damage += self.calc_damage_cut(defender, attacker, move_df)
-                logging.debug(f"Defender will cut reckless attacker")
             if 'Spiny Body' in defender.abilities:
+                logging.debug(f"Defender may pierce reckless attacker")
                 self_damage += self.calc_damage_pierce(defender, attacker, move_df)
-                logging.debug(f"Defender will pierce reckless attacker")
-            attacker.take_damage(damage)
-            hurt_self = True
+
+            attacker.take_damage(self_damage)
+
 
         # Healing
         healing = move_df['self_healing']
@@ -210,7 +252,7 @@ class Battle:
                 f"{defender_prefix} {defender.name}</span>")
             self.round_log.append(
                 f"<span class='damage'>{defender_prefix} {defender.name} lost {damage:.1f} health</span>")
-            if hurt_self:
+            if recoil:
                 self.round_log.append(f"<span class='damage'>{attacker_prefix} {attacker.name} hurt itself, taking {self_damage:.1f} damage</span>")
 
     def player_turn(self, move_index):
@@ -225,6 +267,7 @@ class Battle:
         self.round_log = []
         self.round_count += 1
         self.log.append(f"<div class='turn-heading'>Round {self.round_count}</div>")
+        logging.info(f"------ ROUND {self.round_count} ------")
 
         if self.player.speed >= self.opponent.speed:
             self.log.append(f"Player's {self.player.name} is faster than Opponent's {self.opponent.name}")
