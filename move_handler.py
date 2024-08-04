@@ -1,6 +1,8 @@
 import random
 import logging
 import pandas as pd
+from contextlib import contextmanager
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -9,6 +11,33 @@ logger = logging.getLogger(__name__)
 class MoveHandler:
     def __init__(self, moves_df):
         self.moves_df = moves_df
+
+    @contextmanager
+    def temp_stat_mod_by_ability(self, attacker, defender, move_df):
+        original_hardness = attacker.hardness
+        original_strength = attacker.strength
+
+        # Appendage Moves
+        if move_df['Implement'] == 'Appendage':
+            if 'Blade' in attacker.abilities and original_hardness < 3:
+                attacker.hardness = 3
+            if 'Point' in attacker.abilities and original_hardness < 3:
+                attacker.hardness = 3
+        if move_df['Implement'] == 'Mouth':
+            if 'Fangs' in attacker.abilities and original_hardness < 4:
+                attacker.hardness = 4
+            if 'Beak' in attacker.abilities and original_hardness < 3:
+                attacker.hardness = 3
+            if 'Power Mandibles' in attacker.abilities:
+                attacker.strength += 2
+
+        try:
+            yield
+        finally:
+            attacker.hardness = original_hardness
+            attacker.strength = original_strength
+
+
     def calc_move_damage(self, attacker, defender, move_df):
         damage = move_df['target_direct_damage']
         move_name = move_df['name']
@@ -21,7 +50,7 @@ class MoveHandler:
         logging.debug(f"--- {move_name} damage being calculated ---")
 
         # Appendage attacks
-        if move_name in ['Strike', 'Jab', 'Slash', 'Stab', 'Bludgeon']:
+        if move_df['Implement'] == 'Appendage':
             logger.debug(f"This is an appendage attack")
             if 'Blade' in attacker_abilities:
                 move_additional_cut_damage = True
@@ -35,7 +64,7 @@ class MoveHandler:
                 move_additional_pierce_damage = False
 
         # Biting attacks
-        if move_name in ['Bite']:
+        if move_df['Implement'] == 'Mouth':
             logger.debug(f"This is a biting attack")
             if {'Fangs', 'Beak'} & set(attacker_abilities):
                 move_additional_pierce_damage = True
@@ -44,7 +73,7 @@ class MoveHandler:
                 move_additional_pierce_damage = False
 
         # Body attacks
-        if move_name in ['Tackle', 'Body Slam']:
+        if move_df['Implement'] == 'Body':
             logger.debug(f"This is a body attack")
             if 'Sharp Body' in attacker_abilities:
                 move_additional_cut_damage = True
@@ -58,20 +87,21 @@ class MoveHandler:
                 move_additional_pierce_damage = False
 
         # Calculate damages
-        if damage > 0:
-            logging.debug(f"Move will do {damage:.1f} direct damage.")  # Direct Damage Log
-        if move_df['target_blunt_damage'] > 0:  # Blunt Damage
-            blunt_damage = self.calc_damage_blunt(attacker, defender, move_df)
-            damage += blunt_damage
-            logging.debug(f"Move will do {blunt_damage:.1f} blunt damage.")
-        if move_df['target_cut_damage'] > 0 and move_additional_cut_damage:  # Cut Damage
-            cut_damage = self.calc_damage_cut(attacker, defender, move_df)
-            damage += cut_damage
-            logging.debug(f"Move will do {cut_damage:.1f} cut damage.")
-        if move_df['target_pierce_damage'] > 0 and move_additional_pierce_damage:  # Pierce Damage
-            pierce_damage = self.calc_damage_pierce(attacker, defender, move_df)
-            damage += pierce_damage
-            logging.debug(f"Move will do {pierce_damage:.1f} pierce damage.")
+        with self.temp_stat_mod_by_ability(attacker, defender, move_df):
+            if damage > 0:
+                logging.debug(f"Move will do {damage:.1f} direct damage.")  # Direct Damage Log
+            if move_df['target_blunt_damage'] > 0:  # Blunt Damage
+                blunt_damage = self.calc_damage_blunt(attacker, defender, move_df)
+                damage += blunt_damage
+                logging.debug(f"Move will do {blunt_damage:.1f} blunt damage.")
+            if move_df['target_cut_damage'] > 0 and move_additional_cut_damage:  # Cut Damage
+                cut_damage = self.calc_damage_cut(attacker, defender, move_df)
+                damage += cut_damage
+                logging.debug(f"Move will do {cut_damage:.1f} cut damage.")
+            if move_df['target_pierce_damage'] > 0 and move_additional_pierce_damage:  # Pierce Damage
+                pierce_damage = self.calc_damage_pierce(attacker, defender, move_df)
+                damage += pierce_damage
+                logging.debug(f"Move will do {pierce_damage:.1f} pierce damage.")
 
         return damage
 

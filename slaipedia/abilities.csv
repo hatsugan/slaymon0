@@ -1,0 +1,7 @@
+"name","description"
+"Sharp Body","CUT damage applied to enemy on contact. CUT damage applied with HAR at least 3."
+"Blade","CUT damage may be applied when using appendage moves. CUT damage applied with HAR at least 3."
+"Point","PIERCE damage may be applied when using appendage moves. PIERCE damage applied with HAR at least 3."
+"Fangs","PIERCE damage may be applied when using biting moves. PIERCE damage applied with HAR at least 3."
+"Beak","PIERCE damage may be applied when using biting moves. PIERCE damage applied with HAR at least 3."
+"Power Mandibles","Biting damage STR increased by 2."

@@ -1,10 +1,10 @@
-"name","type","description","self_direct_damage","target_direct_damage","self_healing","target_healing","self_blunt_damage","target_blunt_damage","self_cut_damage","target_cut_damage","self_pierce_damage","target_pierce_damage","self_condition","target_condition","total_max_target_raw_damage"
-"Tackle","DAMAGE","User flings self at target. Extra damage inflicted with certain armours. Will hurt itself slightly.",0,0,0,0,1,5,0,5,0,5,"none","none",15
-"Strike","DAMAGE","User swings a limb at target. Extra damage inflicted with certain limbs.",0,0,0,0,0,5,0,5,0,5,"none","none",15
-"Jab","DAMAGE","User thrusts a limb at target. Extra damage inflicted with certain limbs.",0,0,0,0,0,5,0,5,0,5,"none","none",15
-"Bite","DAMAGE","User bites target.",0,0,0,0,0,2.5,0,0,0,7.5,"none","none",10
-"Body Slam","DAMAGE","User hurls self at target. Extra damage inflicted with certain armours. Will hurt itself.",0,0,0,0,5,10,0,10,0,10,"none","none",30
-"Bludgeon","DAMAGE","User bashes a target with a limb. Extra damage inflicted with certain limbs. Will hurt itself.",0,0,0,0,2.5,15,0,5,0,5,"none","none",25
-"Slash","DAMAGE","User swings a sharp blade at target.",0,0,0,0,0,0,0,20,0,0,"none","none",20
-"Stab","DAMAGE","User thrusts a sharp point at target.",0,0,0,0,0,0,0,0,0,20,"none","none",20
-"Rest","HEAL","User rests for a turn.",0,0,10,0,0,0,0,0,0,0,"none","none",0
+"name","type","description","Implement","self_direct_damage","target_direct_damage","self_healing","target_healing","self_blunt_damage","target_blunt_damage","self_cut_damage","target_cut_damage","self_pierce_damage","target_pierce_damage","self_condition","target_condition","total_max_target_raw_damage"
+"Tackle","DAMAGE","User flings self at target. Extra damage inflicted with certain armours. Will hurt itself slightly.","Body",0,0,0,0,1,5,0,5,0,5,"none","none",15
+"Strike","DAMAGE","User swings a limb at target. Extra damage inflicted with certain limbs.","Appendage",0,0,0,0,0,5,0,5,0,5,"none","none",15
+"Jab","DAMAGE","User thrusts a limb at target. Extra damage inflicted with certain limbs.","Appendage",0,0,0,0,0,5,0,5,0,5,"none","none",15
+"Bite","DAMAGE","User bites target.","Mouth",0,0,0,0,0,2.5,0,0,0,7.5,"none","none",10
+"Body Slam","DAMAGE","User hurls self at target. Extra damage inflicted with certain armours. Will hurt itself.","Body",0,0,0,0,5,10,0,10,0,10,"none","none",30
+"Bludgeon","DAMAGE","User bashes a target with a limb. Extra damage inflicted with certain limbs. Will hurt itself.","Appendage",0,0,0,0,2.5,15,0,5,0,5,"none","none",25
+"Slash","DAMAGE","User swings a sharp blade at target.","Appendage",0,0,0,0,0,0,0,20,0,0,"none","none",20
+"Stab","DAMAGE","User thrusts a sharp point at target.","Appendage",0,0,0,0,0,0,0,0,0,20,"none","none",20
+"Rest","HEAL","User rests for a turn.",,0,0,10,0,0,0,0,0,0,0,"none","none",0

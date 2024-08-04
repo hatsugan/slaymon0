@@ -5,5 +5,5 @@ Hard Crab,40,3,4,2,10,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Res
 Razor Crab,20,3,3,2,25,"['Strike', 'Jab', 'Slash', 'Tackle', 'Body Slam', 'Rest']","['Sharp Body', 'Blade']"
 Soft Crab,50,3,2,3,20,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest']",[]
 Spider,15,2,3,1,20,"['Jab', 'Bite']","['Fangs']"
-Tarantula,30,3,2,2,30,"['Strike', 'Jab', 'Bite']","['Fangs']"
+Tarantula,30,3,2,2,30,"['Strike', 'Jab', 'Bite']","['Fangs', 'Power Mandibles']"
 Blade Squid,35,2,1,1,35,"['Strike', 'Jab', 'Slash', 'Bite', 'Rest']","['Blade', 'Beak']"

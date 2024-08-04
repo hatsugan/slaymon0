@@ -23,9 +23,41 @@ def index():
 @app.route('/select/<int:slay_index>')
 def select_slay(slay_index):
     global battle
-    player_slay = slay_list[slay_index]
-    player_team = get_random_team()
-    opponent_team = get_random_team()
+    # Create a new instance of the selected Slay
+    player_slay = Slay(
+        slay_list[slay_index].name,
+        slay_list[slay_index].base_max_health,
+        slay_list[slay_index].base_strength,
+        slay_list[slay_index].base_hardness,
+        slay_list[slay_index].base_toughness,
+        slay_list[slay_index].base_speed,
+        slay_list[slay_index].base_moves,
+        slay_list[slay_index].base_abilities
+    )
+    # Create new instances for the player's team
+    player_team = [Slay(
+        slay.name,
+        slay.base_max_health,
+        slay.base_strength,
+        slay.base_hardness,
+        slay.base_toughness,
+        slay.base_speed,
+        slay.base_moves,
+        slay.base_abilities
+    ) for slay in get_random_team()]
+
+    # Create new instances for the opponent's team
+    opponent_team = [Slay(
+        slay.name,
+        slay.base_max_health,
+        slay.base_strength,
+        slay.base_hardness,
+        slay.base_toughness,
+        slay.base_speed,
+        slay.base_moves,
+        slay.base_abilities
+    ) for slay in get_random_team()]
+
     player_team[0] = player_slay  # Ensure the selected Slay is part of the player's team
     player = Player("Player", player_team)
     opponent = Player("Opponent", opponent_team)
