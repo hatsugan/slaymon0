@@ -29,12 +29,12 @@ def select_slay(slay_index):
     player_team[0] = player_slay  # Ensure the selected Slay is part of the player's team
     player = Player("Player", player_team)
     opponent = Player("Opponent", opponent_team)
-    logging.debug(f"player 1 team is:")
+    logging.debug("Player 1 team is:")
     for slay in player_team:
-        logging.debug(f"{slay.name}")
-    logging.debug(f"player 2 team is:")
+        logging.debug(slay.name)
+    logging.debug("Player 2 team is:")
     for slay in opponent_team:
-        logging.debug(f"{slay.name}")
+        logging.debug(slay.name)
     battle = Battle(player, opponent, move_handler)
     logger.debug(f"Selected {player.active_slay.name}, opponent is {opponent.active_slay.name}")
     return redirect(url_for('battle_view'))
@@ -48,10 +48,24 @@ def battle_view():
 def move(move_index):
     logging.debug('Move route hit with move index %d', move_index)
     if not battle.is_battle_over():
-        battle.player_turn(battle.player1, move_index)
-        battle.opponent_turn(battle.player2)
+        battle.player1.chosen_action = 'Move'
+        battle.player1.chosen_move_index = move_index
         battle.execute_round()
     return redirect(url_for('battle_view'))
+
+@app.route('/switch/<int:slay_index>')
+def switch_to(slay_index):
+    logging.debug(f'Switch to slay {slay_index}')
+    if not battle.is_battle_over():
+        battle.player1.chosen_action = 'Switch'
+        battle.player1.chosen_switch_index = slay_index
+        battle.execute_round()
+    return redirect(url_for('battle_view'))
+
+@app.route('/switch')
+def switch():
+    logging.debug('Switch route hit')
+    return render_template('switch.html', player=battle.player1, battle=battle)
 
 @app.route('/rematch')
 def rematch():
@@ -59,9 +73,7 @@ def rematch():
     logger.debug("Rematch route hit")
     if battle:
         player_team = get_random_team()
-        logging.debug(f"player 1 team is{player_team}")
         opponent_team = get_random_team()
-        logging.debug(f"player 2 team is{opponent_team}")
         player_team[0] = Slay(
             battle.player1.active_slay.name,
             battle.player1.active_slay.max_health,
