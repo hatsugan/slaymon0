@@ -5,6 +5,11 @@ body {
     padding: 20px;
 }
 
+
+h1, h2, h3 {
+    text-align: center;
+}
+
 .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -14,15 +19,92 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2, h3 {
-    text-align: center;
-}
-
-.battle-section {
+.content {
     display: flex;
     justify-content: space-between;
+}
+
+.player-section, .enemy-section {
+    display: flex;
+    flex-direction: column;
+    width: 35%; /* Adjust width as needed */
     align-items: flex-start;
 }
+
+.player-section-title {
+    text-align: center;
+    font-size: 1.875em;
+}
+
+.battle-log {
+    width: 30%; /* Adjust width as needed */
+    max-height: 300px; /* Set the desired height for the log */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.player-team {
+    margin-top: 20px;
+}
+
+.team-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.team-slay {
+    width: 120px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.team-slay img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 0px;
+}
+
+.team-slay h4 {
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.team-slay .health-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    margin: 5px 0;
+}
+
+.team-slay .health {
+    height: 20px;
+    background-color: #76c7c0;
+    border-radius: 8px;
+}
+
+.team-slay .health-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: black;
+}
+
 
 .slay-card {
     width: 250px;
@@ -33,11 +115,15 @@ h1, h2, h3 {
     text-align: center;
 }
 
+.slay-card h3 {
+    text-transform: uppercase;
+}
+
 .slay-card img {
     width: 240px;
     height: 240px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .health-bar {
@@ -93,10 +179,10 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
-.moves_opponent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.moves, .moves_opponent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     margin-top: 10px;
 }
 
@@ -112,13 +198,6 @@ h1, h2, h3 {
     border-radius: 8px;
 }
 
-
-.moves {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-}
 
 .moves a {
     display: block;
@@ -145,7 +224,7 @@ h1, h2, h3 {
 
 .switch-button a {
     display: block;
-    width: 80%;
+    width: 90%;
     text-align: center;
     background-color: #bb7526;
     color: white;

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Switch Slay</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Switch Slay</h1>
+    <div>
+        {% for slay in player.slays %}
+            {% if not slay.is_fainted() %}
+                <a href="{{ url_for('switch_to', slay_index=loop.index0) }}" class="move-button">{{ slay.name }}</a>
+            {% else %}
+                <p>{{ slay.name }} (Fainted)</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>

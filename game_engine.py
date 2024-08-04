@@ -40,9 +40,10 @@ class Slay:
     def generate_image_filename(self):
         return f"{self.name.lower().replace(' ', '_')}.png"
 
+
     def take_damage(self, damage):
         self.health -= damage
-        if self.health < 0:
+        if self.health < 0.1:
             self.health = 0
         if self.health > self.max_health:
             self.health = self.max_health
@@ -52,7 +53,7 @@ class Slay:
             logger.debug(f"{self.name} will heal {-damage:.1f} health")
 
     def is_fainted(self):
-        return self.health == 0
+        return self.health < 0.1
 
     def reset_to_base(self):
         self.max_health = self.base_max_health
@@ -69,10 +70,29 @@ class Player:
         self.name = name
         self.slays = slays
         self.active_slay = slays[0]  # Start with the first Slay in the team
+        self.chosen_action = None
+        self.chosen_move_index = None
+        self.chosen_switch_index = None
 
-    def set_active_slay(self, index):
-        if index < len(self.slays):
-            self.active_slay = self.slays[index]
+    def reset_actions(self):
+        self.chosen_action = None
+        self.chosen_move_index = None
+        self.chosen_switch_index = None
+
+    def switch_slay(self):
+        if self.chosen_switch_index < len(self.slays):
+            self.active_slay = self.slays[self.chosen_switch_index]
+
+    def switch_next_living_slay(self):
+        for i, slay in enumerate(self.slays):
+            if not slay.is_fainted():
+                self.chosen_switch_index = i
+                logging.debug(f"{self.name} will switch to slay #{i}")
+                self.switch_slay()
+                return
+            logging.debug(f"{slay.name} is dead, cannot switch")
+        logging.debug(f"{self.name} has no remaining Slays to switch to")
+
 
     def is_defeated(self):
         return all(slay.is_fainted() for slay in self.slays)
@@ -85,54 +105,109 @@ class Battle:
         self.round_log = []
         self.log = []
         self.move_handler = move_handler
-        self.player1_move = None
-        self.player2_move = None
 
     def slay_move(self, attacker, defender, move, attacker_prefix, defender_prefix):
         self.move_handler.slay_move(attacker, defender, move, attacker_prefix, defender_prefix, self.round_log)
 
-    def player_turn(self, player, move_index):
+    def player_action_move(self, player, move_index):
         self.player1_move = player.active_slay.moves[move_index]
+        self.player1_switch = None
         logging.debug(f"{player.name} selected move: {self.player1_move}")
 
-    def opponent_turn(self, opponent):
-        self.player2_move = random.choice(opponent.active_slay.moves)
-        logging.debug(f"{opponent.name} selected move: {self.player2_move}")
+
+    # def opponent_action_move(self, opponent):
+    #     if opponent.active_slay.is_fainted():
+    #         self.opponent_action_switch(opponent)
+    #     else:
+    #         self.player2_move = random.choice(opponent.active_slay.moves)
+    #         self.player2_switch = None
+    #         logging.debug(f"{opponent.name} selected move: {self.player2_move}")
+    #
+    # def opponent_action_switch(self, opponent):
+    #     for i, slay in enumerate(opponent.slays):
+    #         if not slay.is_fainted():
+    #             self.player2_switch = i
+    #             self.player2_move = None
+    #             self.round_log.append(f"{opponent.name} switched to {slay.name}")
+    #             logging.debug(f"{opponent.name} switched to {slay.name}")
+    #             return
+    #     logging.debug(f"{opponent.name} has no remaining Slays to switch to")
 
     def execute_round(self):
         self.round_log = []
         self.round_count += 1
         self.log.append(f"<div class='turn-heading'>Round {self.round_count}</div>")
-        logging.info(f"------ ROUND {self.round_count} ------")
+        logging.info(f"------------ ROUND {self.round_count} ------------")
 
-        player_slay = self.player1.active_slay
-        opponent_slay = self.player2.active_slay
+        # Select random action for opponent
+        self.player2.chosen_action = 'Move'
+        self.player2.chosen_move_index = random.randint(0, len(self.player2.active_slay.moves)-1)
 
-        if player_slay.speed >= opponent_slay.speed:
-            self.log.append(f"{self.player1.name}'s {player_slay.name} is faster than {self.player2.name}'s {opponent_slay.name}")
-            self.slay_move(player_slay, opponent_slay, self.player1_move, f"{self.player1.name}'s", f"{self.player2.name}'s")
-            if not opponent_slay.is_fainted():
-                self.slay_move(opponent_slay, player_slay, self.player2_move, f"{self.player2.name}'s", f"{self.player1.name}'s")
+
+        if self.player1.chosen_action == 'Move':
+            logging.debug(f"{self.player1.name} chose to have {self.player1.active_slay.name} use move #{self.player1.chosen_move_index} ({self.player1.active_slay.moves[self.player1.chosen_move_index]})")
+        elif self.player1.chosen_action == 'Switch':
+            logging.debug(f"{self.player1.name} chose to switch {self.player1.active_slay.name} to {self.player1.slays[self.player1.chosen_switch_index].name}")
+            
+        if self.player2.chosen_action == 'Move':
+            logging.debug(f"{self.player2.name} chose to have {self.player2.active_slay.name} use move #{self.player2.chosen_move_index} ({self.player2.active_slay.moves[self.player2.chosen_move_index]})")
+        elif self.player2.chosen_action == 'Switch':
+            logging.debug(f"{self.player2.name} chose to switch {self.player2.active_slay.name} to {self.player2.slays[self.player2.chosen_switch_index].name}")
+
+
+        # Switch Phase
+        if self.player1.chosen_action == 'Switch':  # Switch Player 1
+            self.player1.switch_slay()
+            logging.debug(f"{self.player1.name} switched to {self.player1.active_slay.name}")
+
+        if self.player2.chosen_action == 'Switch':  # Switch Player 1
+            self.player2.switch_slay()
+            logging.debug(f"{self.player2.name} switched to {self.player2.active_slay.name}")
+
+        # Combat Phase
+        # turn_order list - 1:[Attacker, Defender], 2:[Attacker, Defender]
+        if self.player1.active_slay.speed >= self.player2.active_slay.speed:
+            self.log.append(
+                f"{self.player1.name}'s {self.player1.active_slay.name} is faster than {self.player2.name}'s {self.player2.active_slay.name}")
+            turn_order = [[self.player1, self.player2],[self.player2, self.player1]]
         else:
-            self.log.append(f"{self.player2.name}'s {opponent_slay.name} is faster than {self.player1.name}'s {player_slay.name}")
-            self.slay_move(opponent_slay, player_slay, self.player2_move, f"{self.player2.name}'s", f"{self.player1.name}'s")
-            if not player_slay.is_fainted():
-                self.slay_move(player_slay, opponent_slay, self.player1_move, f"{self.player1.name}'s", f"{self.player2.name}'s")
+            self.log.append(
+                f"{self.player2.name}'s {self.player2.active_slay.name} is faster than {self.player1.name}'s {self.player1.active_slay.name}")
+            turn_order = [[self.player2, self.player1], [self.player1, self.player2]]
+
+        for attacker_defender in turn_order:
+            attacker, defender = attacker_defender
+            if attacker.chosen_action == 'Move':  # Catches if switching
+                logging.debug(
+                    f"{attacker.name} selected index: {attacker.chosen_move_index} from move list len {len(attacker.active_slay.moves)}, slay is {attacker.active_slay.name}")
+
+                chosen_move = attacker.active_slay.moves[attacker.chosen_move_index]
+                self.slay_move(attacker.active_slay, defender.active_slay, chosen_move, f"{attacker.name}'s",
+                               f"{defender.name}'s")
+
+                # Handle slay death
+                if attacker.active_slay.is_fainted() and defender.active_slay.is_fainted():
+                    self.round_log.append(
+                        f"Both slays died! Yeesh!")
+                    break
+                elif attacker.active_slay.is_fainted():
+                    self.round_log.append(f"{attacker.name}'s {attacker.active_slay.name} died!")
+                    break
+                elif defender.active_slay.is_fainted():
+                    self.round_log.append(f"{defender.name}'s {defender.active_slay.name} died!")
+                    break
+
+        # Check win condition, otherwise switch
+        if not self.player1.is_defeated() or not self.player2.is_defeated():
+            if self.player1.active_slay.is_fainted():
+                self.player1.switch_next_living_slay()
+                self.round_log.append(f"{self.player1.name} switched to {self.player1.active_slay.name}")
+            if self.player2.active_slay.is_fainted():
+                self.player2.switch_next_living_slay()
+                self.round_log.append(f"{self.player2.name} switched to {self.player2.active_slay.name}")
 
         self.end_round()
 
-    def end_round(self):
-        if self.round_log:
-            self.log.extend(self.round_log)
-            self.round_log = []
-        if self.is_battle_over():
-            self.turn = 'over'
-        else:
-            self.turn = 'player'
-
-    def is_battle_over(self):
-        return self.player1.is_defeated() or self.player2.is_defeated()
-
 
     def end_round(self):
         if self.round_log:
@@ -141,10 +216,16 @@ class Battle:
         if self.is_battle_over():
             self.turn = 'over'
         else:
+            logging.info(f"------ END of ROUND {self.round_count} ------")
+            self.player1.reset_actions()
+            self.player2.reset_actions()
             self.turn = 'player'
 
     def is_battle_over(self):
         return self.player1.is_defeated() or self.player2.is_defeated()
+
+
+
 
 def load_slays_from_csv(filepath):
     slays_df = pd.read_csv(filepath)
@@ -183,4 +264,4 @@ def get_random_slay():
     )
 
 def get_random_team():
-    return random.sample(slay_list, 4)
+    return random.sample(slay_list, 3)

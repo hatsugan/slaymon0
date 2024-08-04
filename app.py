@@ -84,8 +84,14 @@ def rematch():
             battle.player1.active_slay.moves,
             battle.player1.active_slay.abilities
         )
-        player = Player("Player", player_team)
-        opponent = Player("Opponent", opponent_team)
+        for slay in player_team:
+            slay.reset_to_base()
+        for slay in opponent_team:
+            slay.reset_to_base()
+        logger.debug("Slays all reset")
+
+        player = Player("Aures", player_team)
+        opponent = Player("Robo Aaron", opponent_team)
         battle = Battle(player, opponent, move_handler)
         logger.debug(f"Rematch: {battle.player1.active_slay.name} vs {battle.player2.active_slay.name}")
         logger.debug(f"{battle.player1.active_slay.name} starting health: {battle.player1.active_slay.health}")
