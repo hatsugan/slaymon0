@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 from game_engine import Slay, Battle, get_random_slay, slay_list
+from move_handler import MoveHandler
+import pandas as pd
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+moves_df = pd.read_csv('slaipedia/moves.csv')
+move_handler = MoveHandler(moves_df)
 
 app = Flask(__name__)
 
@@ -30,7 +35,7 @@ def select_slay(slay_index):
         player_slay.moves,
         player_slay.abilities
     )
-    battle = Battle(player_slay, opponent_slay)
+    battle = Battle(player_slay, opponent_slay, move_handler)
     logger.debug(f"Selected {player_slay.name}, opponent is {opponent_slay.name}")
     return redirect(url_for('battle_view'))
 
@@ -64,7 +69,7 @@ def rematch():
             battle.player.abilities
         )
         opponent_slay = get_random_slay()
-        battle = Battle(player_slay, opponent_slay)
+        battle = Battle(player_slay, opponent_slay, move_handler)
         logger.debug(f"Rematch: {battle.player.name} vs {battle.opponent.name}")
         logger.debug(f"{battle.player.name} starting health: {battle.player.health}")
         logger.debug(f"{battle.opponent.name} starting health: {battle.opponent.health}")
