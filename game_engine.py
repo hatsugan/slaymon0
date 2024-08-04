@@ -87,47 +87,47 @@ class Battle:
         print(attacker_abilities)
         defender_abilities = defender.abilities
 
-        move_cuts = False
-        move_pierces = False
+        move_additional_cut_damage = False
+        move_additional_pierce_damage = False
 
         logging.debug(f"{move_name} damage being calculated.")
 
         # Appendage attacks
-        if move_name in ['Strike', 'Jab', 'Slash', 'Stab']:
+        if move_name in ['Strike', 'Jab', 'Slash', 'Stab', 'Bludgeon']:
             logger.debug(f"This is an appendage attack")
             if 'Blade' in attacker_abilities:
-                move_cuts = True
+                move_additional_cut_damage = True
                 logger.debug(f"This is a cutting appendage attack")
             else:
-                move_cuts = False
+                move_additional_cut_damage = False
             if 'Point' in attacker_abilities:
-                move_pierces = True
+                move_additional_pierce_damage = True
                 logger.debug(f"This is a piercing appendage attack")
             else:
-                move_pierces = False
+                move_additional_pierce_damage = False
 
         # Biting attacks
         if move_name in ['Bite']:
             logger.debug(f"This is a biting attack")
             if {'Fangs', 'Beak'} & set(attacker_abilities):
-                move_pierces = True
+                move_additional_pierce_damage = True
                 logger.debug(f"This is a piercing biting attack")
             else:
-                move_pierces = False
+                move_additional_pierce_damage = False
 
         # Body attacks
-        if move_name in ['Tackle']:
+        if move_name in ['Tackle', 'Body Slam']:
             logger.debug(f"This is a body attack")
             if 'Sharp Body' in attacker_abilities:
-                move_cuts = True
+                move_additional_cut_damage = True
                 logger.debug(f"This is a cutting body attack")
             else:
-                move_cuts = False
+                move_additional_cut_damage = False
             if 'Spiked Body' in attacker_abilities:
-                move_pierces = True
+                move_additional_pierce_damage = True
                 logger.debug(f"This is a piercing body attack")
             else:
-                move_pierces = False
+                move_additional_pierce_damage = False
 
         # Calculate damages
         if damage > 0:
@@ -135,10 +135,10 @@ class Battle:
         if move_df['target_blunt_damage'] > 0:  # Blunt Damage
             damage += self.calc_damage_blunt(attacker, defender, move_df)
             logging.debug(f"Move will do {damage:.1f} blunt damage.")
-        if move_df['target_cut_damage'] > 0 and move_cuts:  # Cut Damage
+        if move_df['target_cut_damage'] > 0 and move_additional_cut_damage:  # Cut Damage
             damage += self.calc_damage_cut(attacker, defender, move_df)
             logging.debug(f"Move will do {damage:.1f} cut damage.")
-        if move_df['target_pierce_damage'] > 0 and move_pierces:  # Pierce Damage
+        if move_df['target_pierce_damage'] > 0 and move_additional_pierce_damage:  # Pierce Damage
             damage += self.calc_damage_pierce(attacker, defender, move_df)
             logging.debug(f"Move will do {damage:.1f} pierce damage.")
         return damage
@@ -150,13 +150,21 @@ class Battle:
 
 
     def calc_damage_cut(self, attacker, defender, move_df):
-        factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+        if attacker.hardness - defender.hardness >= 0:
+            factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
                   1 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
+        else:
+            factor = 0
+            logging.debug("Defender could not be pierced")
         return move_df['target_cut_damage'] * factor
 
     def calc_damage_pierce(self, attacker, defender, move_df):
-        factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
-                  2 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
+        if attacker.hardness - defender.hardness >= 2:
+            factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                      2 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
+        else:
+            factor = 0
+            logging.debug("Defender could not be pierced")
         return move_df['target_pierce_damage'] * factor
 
 
@@ -169,13 +177,21 @@ class Battle:
         damage = self.calc_move_damage(attacker, defender, move_df)
         defender.take_damage(damage)
         # Tackle Self Damage
-        if move_df['name'] == 'Tackle':
+        if move_df['name'] in ['Tackle', 'Body Slam', 'Bludgeon']:
             self_damage = self.calc_damage_blunt(defender, attacker, move_df)
+            if 'Sharp Body' in defender.abilities:
+                self_damage += self.calc_damage_cut(defender, attacker, move_df)
+                logging.debug(f"Defender will cut reckless attacker")
+            if 'Spiny Body' in defender.abilities:
+                self_damage += self.calc_damage_pierce(defender, attacker, move_df)
+                logging.debug(f"Defender will pierce reckless attacker")
             attacker.take_damage(damage)
             hurt_self = True
 
         # Healing
         healing = move_df['self_healing']
+
+        # Apply Damage, Healing, Add to Log
         if healing > 0:
             self.round_log.append(
                 f"<span class='move'>{attacker_prefix} {attacker.name} used {move}</span>")
@@ -195,7 +211,7 @@ class Battle:
             self.round_log.append(
                 f"<span class='damage'>{defender_prefix} {defender.name} lost {damage:.1f} health</span>")
             if hurt_self:
-                self.round_log.append(f"<span class='damage'>{attacker_prefix} {attacker.name} hurt itself, causing {self_damage:.1f} damage</span>")
+                self.round_log.append(f"<span class='damage'>{attacker_prefix} {attacker.name} hurt itself, taking {self_damage:.1f} damage</span>")
 
     def player_turn(self, move_index):
         self.player_move = self.player.moves[move_index]
@@ -237,12 +253,23 @@ class Battle:
 
 # Example Slays
 slay_list = [
-    Slay('Cutting Beetle', 30, 3, 4, 2, 15, ['Bite', 'Tackle'], ['Sharp Body']),
-    Slay('Hydrypt', 15, 1, 3, 1, 30, ['Strike', 'Jab', 'Stab'], ['Point']),
-    Slay('Hard Crab', 40, 3, 4, 2, 10, ['Strike', 'Jab', 'Tackle', 'Rest'], []),
-    Slay('Soft Crab', 50, 3, 2, 3, 20, ['Strike', 'Jab', 'Tackle', 'Rest'], []),
-    Slay('Spider', 15, 3, 3, 1, 20, ['Strike', 'Jab', 'Bite'], ['Fangs']),
-    Slay('Blade Squid', 35, 2, 1, 1, 35, ['Strike', 'Jab', 'Slash', 'Bite', 'Rest'], ['Blade', 'Beak']),
+    Slay('Cutting Beetle', 30, 3, 4, 2, 15,
+         ['Bite', 'Tackle'], ['Sharp Body']),
+    Slay('Hydrypt', 15, 1, 3, 1, 30,
+         ['Jab', 'Stab'], ['Point']),
+    Slay('Hard Crab', 40, 3, 4, 2, 10,
+         ['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest'], []),
+    Slay('Razor Crab', 20, 3, 3, 2, 25,
+         ['Strike', 'Jab', 'Slash', 'Tackle', 'Body Slam', 'Rest'],
+         ['Sharp Body', 'Blade']),
+    Slay('Soft Crab', 50, 3, 2, 3, 20,
+         ['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest'], []),
+    Slay('Spider', 15, 2, 3, 1, 20,
+         ['Jab', 'Bite'], ['Fangs']),
+    Slay('Tarantula', 30, 3, 2, 2, 30,
+         ['Strike', 'Jab', 'Bite'], ['Fangs']),
+    Slay('Blade Squid', 35, 2, 1, 1, 35,
+         ['Strike', 'Jab', 'Slash', 'Bite', 'Rest'], ['Blade', 'Beak']),
 ]
 
 def get_random_slay():
