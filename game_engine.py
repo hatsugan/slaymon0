@@ -19,7 +19,7 @@ moves_df = load_moves_from_csv('slaipedia/moves.csv')
 
 
 class Slay:
-    def __init__(self, name, health, strength, hardness, toughness, speed, moves):
+    def __init__(self, name, health, strength, hardness, toughness, speed, moves, abilities):
         self.name = name
         self.image = self.generate_image_filename()
 
@@ -31,6 +31,7 @@ class Slay:
         self.base_toughness = toughness
         self.base_speed = speed
         self.base_moves = moves
+        self.base_abilities = abilities
 
         # Current stats
         self.max_health = self.base_max_health
@@ -41,6 +42,7 @@ class Slay:
         self.speed = self.base_speed
         self.moves = self.base_moves
         self.moves_dict = convert_moves_to_dict(moves)
+        self.abilities = self.base_abilities
 
     def generate_image_filename(self):
         return f"{self.name.lower().replace(' ', '_')}.png"
@@ -80,17 +82,65 @@ class Battle:
 
     def calc_move_damage(self, attacker, defender, move_df):
         damage = move_df['target_direct_damage']
-        logging.debug(f"{move_df['name']} damage being calculated.")
-        logging.debug(f"Move will do {damage} direct damage.")
-        if move_df['target_blunt_damage'] > 0:
+        move_name = move_df['name']
+        attacker_abilities = attacker.abilities
+        print(attacker_abilities)
+        defender_abilities = defender.abilities
+
+        move_cuts = False
+        move_pierces = False
+
+        logging.debug(f"{move_name} damage being calculated.")
+
+        # Appendage attacks
+        if move_name in ['Strike', 'Jab', 'Slash', 'Stab']:
+            logger.debug(f"This is an appendage attack")
+            if 'Blade' in attacker_abilities:
+                move_cuts = True
+                logger.debug(f"This is a cutting appendage attack")
+            else:
+                move_cuts = False
+            if 'Point' in attacker_abilities:
+                move_pierces = True
+                logger.debug(f"This is a piercing appendage attack")
+            else:
+                move_pierces = False
+
+        # Biting attacks
+        if move_name in ['Bite']:
+            logger.debug(f"This is a biting attack")
+            if {'Fangs', 'Beak'} & set(attacker_abilities):
+                move_pierces = True
+                logger.debug(f"This is a piercing biting attack")
+            else:
+                move_pierces = False
+
+        # Body attacks
+        if move_name in ['Tackle']:
+            logger.debug(f"This is a body attack")
+            if 'Sharp Body' in attacker_abilities:
+                move_cuts = True
+                logger.debug(f"This is a cutting body attack")
+            else:
+                move_cuts = False
+            if 'Spiked Body' in attacker_abilities:
+                move_pierces = True
+                logger.debug(f"This is a piercing body attack")
+            else:
+                move_pierces = False
+
+        # Calculate damages
+        if damage > 0:
+            logging.debug(f"Move will do {damage:.1f} direct damage.")  # Direct Damage Log
+        if move_df['target_blunt_damage'] > 0:  # Blunt Damage
             damage += self.calc_damage_blunt(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage} blunt damage.")
-        if move_df['target_cut_damage'] > 0:
+            logging.debug(f"Move will do {damage:.1f} blunt damage.")
+        if move_df['target_cut_damage'] > 0 and move_cuts:  # Cut Damage
             damage += self.calc_damage_cut(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage} cut damage.")
-        if move_df['target_pierce_damage'] > 0:
+            logging.debug(f"Move will do {damage:.1f} cut damage.")
+        if move_df['target_pierce_damage'] > 0 and move_pierces:  # Pierce Damage
             damage += self.calc_damage_pierce(attacker, defender, move_df)
-            logging.debug(f"Move will do {damage} pierce damage.")
+            logging.debug(f"Move will do {damage:.1f} pierce damage.")
         return damage
 
 
@@ -112,9 +162,18 @@ class Battle:
 
     def slay_move(self, attacker, defender, move, attacker_prefix, defender_prefix):
         move_df = moves_df.loc[moves_df['name'] == move].iloc[0]
+
+        hurt_self = False
+
         # Damage
         damage = self.calc_move_damage(attacker, defender, move_df)
         defender.take_damage(damage)
+        # Tackle Self Damage
+        if move_df['name'] == 'Tackle':
+            self_damage = self.calc_damage_blunt(defender, attacker, move_df)
+            attacker.take_damage(damage)
+            hurt_self = True
+
         # Healing
         healing = move_df['self_healing']
         if healing > 0:
@@ -135,12 +194,8 @@ class Battle:
                 f"{defender_prefix} {defender.name}</span>")
             self.round_log.append(
                 f"<span class='damage'>{defender_prefix} {defender.name} lost {damage:.1f} health</span>")
-        # elif move_df['modality'] == 'HEAL':
-        #     healing = self.calculate_healing(attacker, move_df)
-        #     attacker.take_damage(healing)
-        #     self.round_log.append(f"<span class='move'>{attacker_prefix} {attacker.name} used {move}</span>")
-        #     self.round_log.append(
-        #         f"<span class='damage'>{attacker_prefix} {attacker.name} gained {-healing:.1f} health</span>")
+            if hurt_self:
+                self.round_log.append(f"<span class='damage'>{attacker_prefix} {attacker.name} hurt itself, causing {self_damage:.1f} damage</span>")
 
     def player_turn(self, move_index):
         self.player_move = self.player.moves[move_index]
@@ -182,11 +237,12 @@ class Battle:
 
 # Example Slays
 slay_list = [
-    Slay('Cutting Beetle', 30, 3, 4, 2, 15, ['Strike', 'Rest']),
-    Slay('Hydrypt', 15, 1, 3, 1, 30, ['Strike', 'Rest']),
-    Slay('Hard Crab', 40, 3, 4, 2, 10, ['Strike', 'Rest']),
-    Slay('Soft Crab', 50, 3, 2, 3, 20, ['Strike', 'Rest']),
-    Slay('Spider', 15, 3, 3, 1, 20, ['Strike', 'Rest']),
+    Slay('Cutting Beetle', 30, 3, 4, 2, 15, ['Bite', 'Tackle'], ['Sharp Body']),
+    Slay('Hydrypt', 15, 1, 3, 1, 30, ['Strike', 'Jab', 'Stab'], ['Point']),
+    Slay('Hard Crab', 40, 3, 4, 2, 10, ['Strike', 'Jab', 'Tackle', 'Rest'], []),
+    Slay('Soft Crab', 50, 3, 2, 3, 20, ['Strike', 'Jab', 'Tackle', 'Rest'], []),
+    Slay('Spider', 15, 3, 3, 1, 20, ['Strike', 'Jab', 'Bite'], ['Fangs']),
+    Slay('Blade Squid', 35, 2, 1, 1, 35, ['Strike', 'Jab', 'Slash', 'Bite', 'Rest'], ['Blade', 'Beak']),
 ]
 
 def get_random_slay():
@@ -198,5 +254,6 @@ def get_random_slay():
         random_slay.hardness,
         random_slay.toughness,
         random_slay.speed,
-        random_slay.moves
+        random_slay.moves,
+        random_slay.abilities
     )

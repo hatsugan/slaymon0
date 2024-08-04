@@ -27,7 +27,8 @@ def select_slay(slay_index):
         player_slay.hardness,
         player_slay.toughness,
         player_slay.speed,
-        player_slay.moves
+        player_slay.moves,
+        player_slay.abilities
     )
     battle = Battle(player_slay, opponent_slay)
     logger.debug(f"Selected {player_slay.name}, opponent is {opponent_slay.name}")
@@ -59,7 +60,8 @@ def rematch():
             battle.player.hardness,
             battle.player.toughness,
             battle.player.speed,
-            battle.player.moves
+            battle.player.moves,
+            battle.player.abilities
         )
         opponent_slay = get_random_slay()
         battle = Battle(player_slay, opponent_slay)
