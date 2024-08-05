@@ -395,3 +395,40 @@ h1, h2, h3 {
     word-wrap: break-word; /* Handle long words gracefully */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a slight shadow for better contrast */
 }
+
+
+.button-multiplayer {
+    display: block;
+    width: 600px;
+    text-align: center;
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    margin: 20px 0;
+    text-decoration: none;
+    border-radius: 8px;
+    border-color: #218838;
+    font-size: 32px;
+}
+
+.button-multiplayer:hover {
+    background-color: #218838;
+}
+
+.button-singleplayer {
+    display: block;
+    width: 600px;
+    text-align: center;
+    background-color: #25a4d2;
+    color: white;
+    padding: 10px;
+    margin: 20px 0;
+    text-decoration: none;
+    border-radius: 8px;
+    border-color: #1b7fa2;
+    font-size: 32px;
+}
+
+.button-singleplayer:hover {
+    background-color: #1b7fa2;
+}
