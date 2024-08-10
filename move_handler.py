@@ -109,11 +109,11 @@ class MoveHandler:
     def calc_damage_blunt(self, attacker, defender, move_df, recoil=False):
         if not recoil:  # Target Damage
             base_damage = move_df['target_blunt_damage']
-            factor = 1.3161 ** (attacker.strength - defender.toughness)
+            factor = 1.3161 ** (attacker.strength - defender.durability)
 
         else:  # Self Damage
             base_damage = move_df['self_blunt_damage']
-            factor = 1.3161 ** (attacker.strength - attacker.toughness)
+            factor = 1.3161 ** (attacker.strength - attacker.durability)
 
         logging.debug(
             f"BLUNT - Factor: {factor:.1f}, Base Damage: {base_damage:.1f}, Resulting: {base_damage * factor:.1f}")
@@ -124,7 +124,7 @@ class MoveHandler:
         if not recoil:  # Target Damage
             base_damage = move_df['target_cut_damage']
             if attacker.hardness - defender.hardness >= 0:
-                factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                factor = (2 / 3 * (1.3161 ** (attacker.strength - defender.durability)) +
                           1 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
             else:
                 factor = 0
@@ -133,7 +133,7 @@ class MoveHandler:
         else:  # Self Damage
             base_damage = move_df['self_cut_damage']
             if defender.hardness - attacker.hardness >= 0:
-                factor = (2 / 3 * (1.3161 ** (attacker.strength - attacker.toughness)) +
+                factor = (2 / 3 * (1.3161 ** (attacker.strength - attacker.durability)) +
                           1 / 3 * (1.3161 ** (attacker.strength - attacker.hardness)))
             else:
                 factor = 0
@@ -147,7 +147,7 @@ class MoveHandler:
         if not recoil:  # Target Damage
             base_damage = move_df['target_pierce_damage']
             if attacker.hardness - defender.hardness >= 2:
-                factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.toughness)) +
+                factor = (1 / 3 * (1.3161 ** (attacker.strength - defender.durability)) +
                           2 / 3 * (1.3161 ** (attacker.strength - defender.hardness)))
             else:
                 factor = 0
@@ -156,7 +156,7 @@ class MoveHandler:
         else:  # Self Damage
             base_damage = move_df['self_pierce_damage']
             if defender.hardness - attacker.hardness >= 2:
-                factor = (1 / 3 * (1.3161 ** (attacker.strength - attacker.toughness)) +
+                factor = (1 / 3 * (1.3161 ** (attacker.strength - attacker.durability)) +
                           2 / 3 * (1.3161 ** (attacker.strength - attacker.hardness)))
             else:
                 factor = 0

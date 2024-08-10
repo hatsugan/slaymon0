@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traits Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='slaipedia.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Traits</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Formal Name</th>
+                    <th>Description</th>
+                    <th>10 Biomass Cost</th>
+                    <th>Strength Modifier</th>
+                    <th>Hardness Modifier</th>
+                    <th>Durability Modifier</th>
+                    <th>Speed Modifier</th>
+                    <th>Trait Tags</th>
+                    <th>Additional Moves</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trait in traits.values() %}
+                <tr>
+                    <td>{{ trait['formal_name'] }}</td>
+                    <td>{{ trait['description'] }}</td>
+                    <td>{{ trait['cost'] }}</td>
+                    <td>{{ trait['strength_modifier'] }}</td>
+                    <td>{{ trait['hardness_modifier'] }}</td>
+                    <td>{{ trait['durability_modifier'] }}</td>
+                    <td>{{ trait['speed_modifier'] }}</td>
+                    <td>{{ trait['trait_tags'] | join(', ') }}</td>
+                    <td>{{ trait['additional_moves'] | join(', ') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slaypedia - Slays</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='slaipedia.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Slays</h1>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Biomass (species)</th>
+                <th>STR (body)</th>
+                <th>DUR (body)</th>
+                <th>SPE (body)</th>
+                <th>Moves (species)</th>
+                <th>Traits (species)</th>
+                <th>Edit</th>
+            </tr>
+            {% for slay_name, slay in slays_dict.items() %}
+            <tr>
+                <td>{{ slay['name'] }}</td>
+                <td>{{ slay['biomass'] }} <span class="cost-bubble">{{ slay['biomass_cost'] }}</span></td>
+                <td>{{ slay['body_strength'] }}</td>
+                <td>{{ slay['body_durability'] }}</td>
+                <td>{{ slay['body_speed'] }}</td>
+                <td>
+                    <ul>
+                    {% for move in slay['species_moves'] %}
+                        <li>{{ move }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                    {% for trait in slay['species_traits'] %}
+                        <li>
+                            <span class="cost-bubble">{{ traits_dict[trait]['cost'] }}</span> {{trait}}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <form action="{{ url_for('slay_editor', slay_name=slay['name']) }}">
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

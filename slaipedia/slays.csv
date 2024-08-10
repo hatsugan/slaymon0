@@ -1,9 +1,12 @@
-name,max_health,strength,hardness,toughness,speed,moves,abilities
-Cutting Beetle,30,3,4,2,15,"['Bite', 'Tackle']","['Sharp Body']"
-Hydrypt,15,1,3,1,30,"['Jab', 'Stab']","['Point']"
-Hard Crab,40,3,4,2,10,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest']",[]
-Razor Crab,20,3,3,2,25,"['Strike', 'Jab', 'Slash', 'Tackle', 'Body Slam', 'Rest']","['Sharp Body', 'Blade']"
-Soft Crab,50,3,2,3,20,"['Strike', 'Jab', 'Bludgeon', 'Tackle', 'Body Slam', 'Rest']",[]
-Spider,15,2,3,1,20,"['Jab', 'Bite']","['Fangs']"
-Tarantula,30,3,2,2,30,"['Strike', 'Jab', 'Bite']","['Fangs', 'Power Mandibles']"
-Blade Squid,35,2,1,1,35,"['Strike', 'Jab', 'Slash', 'Bite', 'Rest']","['Blade', 'Beak']"
+name,formal_name,species_moves,species_traits,biomass,body_strength,body_durability,body_speed
+Mewing Aranoid,"Aranoid, Mewing",[],"['Fangs, Greater', 'Fangs, Venomous', 'Shell, Lesser']",20.0,3,2,20
+Ozempic Aranoid,"Aranoid, Ozempic",[],"['Fangs, Venomous', 'Shell, Lesser', 'Spinneret']",5.0,1,1,30
+"Jetbeetle, Arson",Arson Jetbeetle,[],"['Shell, Lesser', 'Squirter, Hypergolic']",20.0,1,2,20
+Bulwark Crab,"Crab, Bulwark",[],"['Claw, Lesser', 'Shell, Greater']",30.0,2,3,10
+Lesser Crab,"Crab, Lesser",[],"['Claw, Lesser', 'Shell, Lesser']",20.0,2,2,20
+Lascer Helmbeetle,"Helmbeetle, Lascer",[],"['Horn, Sabre', 'Shell, Lesser']",20.0,2,3,30
+Hydrypt,Hydrypt,[],"['Proboscis, Hemopump', 'Shell, Lesser', 'Wings, Membrane']",5.0,1,1,15
+"Helmbeetle, Lesser ",Lesser Helmbeetle,[],"['Horn, Helmet', 'Shell, Lesser']",20.0,2,3,30
+Blimp Medusoid,"Medusoid, Blimp",[],"['Buoyancy Sac, Atmospheric', 'Gelatinous', 'Tentacle, Venomous']",5.0,1,1,10
+Lesser Scorpoid,"Scorpoid, Lesser",[],"['Claw, Lesser', 'Shell, Lesser', 'Sting, Venomous']",10.0,1,2,30
+Lascer Squid,"Squid, Lascer",[],"['Tentacle, Scimitar']",20.0,2,1,10

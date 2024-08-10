@@ -29,7 +29,7 @@ def select_slay(slay_index):
         slay_list[slay_index].base_max_health,
         slay_list[slay_index].base_strength,
         slay_list[slay_index].base_hardness,
-        slay_list[slay_index].base_toughness,
+        slay_list[slay_index].base_durability,
         slay_list[slay_index].base_speed,
         slay_list[slay_index].base_moves,
         slay_list[slay_index].base_abilities
@@ -40,7 +40,7 @@ def select_slay(slay_index):
         slay.base_max_health,
         slay.base_strength,
         slay.base_hardness,
-        slay.base_toughness,
+        slay.base_durability,
         slay.base_speed,
         slay.base_moves,
         slay.base_abilities
@@ -52,7 +52,7 @@ def select_slay(slay_index):
         slay.base_max_health,
         slay.base_strength,
         slay.base_hardness,
-        slay.base_toughness,
+        slay.base_durability,
         slay.base_speed,
         slay.base_moves,
         slay.base_abilities
@@ -111,7 +111,7 @@ def rematch():
             battle.player1.active_slay.max_health,
             battle.player1.active_slay.strength,
             battle.player1.active_slay.hardness,
-            battle.player1.active_slay.toughness,
+            battle.player1.active_slay.durability,
             battle.player1.active_slay.speed,
             battle.player1.active_slay.moves,
             battle.player1.active_slay.abilities

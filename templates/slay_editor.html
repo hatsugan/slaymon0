@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Slay Traits and Stats</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slaipedia.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Traits and Stats for {{ slay['name'] }}</h1>
+        <form method="post" action="{{ url_for('slay_editor', slay_name=slay['name']) }}">
+            <h2>Edit Stats</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stat</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Biomass</td>
+                        <td><input type="number" name="biomass" value="{{ slay['biomass'] }}" required></td>
+                    </tr>
+                    <tr>
+                        <td>STR (body)</td>
+                        <td><input type="number" name="body_strength" value="{{ slay['body_strength'] }}" required></td>
+                    </tr>
+                    <tr>
+                        <td>DUR (body)</td>
+                        <td><input type="number" name="body_durability" value="{{ slay['body_durability'] }}" required></td>
+                    </tr>
+                    <tr>
+                        <td>SPE (body)</td>
+                        <td><input type="number" name="body_speed" value="{{ slay['body_speed'] }}" required></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Edit Traits</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Trait Name</th>
+                        <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trait_name, trait in all_traits.items() %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selected_traits" value="{{ trait_name }}"
+                                   {% if trait_name in slay['species_traits'] %}checked{% endif %}>
+                        </td>
+                        <td>{{ trait_name }}</td>
+                        <td>{{ ', '.join(trait['trait_tags']) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="{{ url_for('slays_viewer') }}" class="back-button">Back to Slays</a>
+    </div>
+</body>
+</html>
