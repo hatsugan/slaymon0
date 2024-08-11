@@ -97,25 +97,60 @@ class Slay:
         self.current_moves = self.base_moves
 
     def compute_stats_from_traits(self):
+        # dont forget minimums
         pass
 
     def populate_moves_from_traits(self):
-        logger.debug(f"Populating {self.nickname}'s moves from its traits")
+        logger.debug(f"Populating {self.nickname}'s moves")
         traits_dict = self.battle.traits_dict
+
+        # Body Moves
+        # Quality Augment from Trait
+        if self.current_stats['biomass'] >= 10:
+            trait_quality_augment = get_trait_quality_augment()
+            augmenting_trait_tags = []
+            has_body_augmenting_trait = False
+
+            for trait_name in self.base_traits:
+                trait = traits_dict[trait_name]
+                trait_tags = trait['trait_tags']
+                if ('Body Modifier' in trait_tags) and ({'Sharp Edge', 'Sharp Point'} & set(trait_tags)):
+                    augmenting_trait_tags.append(trait_tags)
+                    has_body_augmenting_trait = True
+
+            if has_body_augmenting_trait:
+                trait_quality_augment = get_trait_quality_augment(augmenting_trait_tags)
+                logger.debug(f'      Trait quality augmentation: {trait_quality_augment}')
+
+            logger.debug(f'         Adding Tackle')
+            move = self.pre_add_move('Tackle', is_body_move=True)
+            self.add_move(move, trait_quality_augment)
+
+            if self.current_stats['biomass'] >= 20 and self.current_stats['STR'] >= 3 and self.current_stats['SPE'] >= 20:
+                logger.debug(f'         Slay is strong, fast enough, and heavy enough, adding Body Slam')
+                move = self.pre_add_move('Body Slam', trait, is_body_move=True)
+                self.add_move(move, trait_quality_augment)
+
+        if not self.base_traits:
+            logger.warning(f"{self.nickname} has no traits. Please populate Slaipedia")
+            return
+
+        # Other Trait Moves
+        logger.debug(f"   Populating {self.nickname}'s moves from its traits")
         logger.debug(f'   Traits are: {self.base_traits}')
 
         for trait_name in self.base_traits:
             trait = traits_dict[trait_name]
             trait_tags = trait['trait_tags']
-            logger.debug(f'      Trait tags for {trait_name}: {trait_tags}')
+            logger.debug(f'      Trait {trait_name} has tags: {trait_tags}')
 
-            # Quality Skew from Trait
+            # Quality Augment from Trait
             trait_quality_augment = get_trait_quality_augment(trait_tags)
             logger.debug(f'      Trait quality augmentation: {trait_quality_augment}')
 
             # Appendage Moves
             if 'Appendage' in trait_tags:
-                logger.debug(f'      This is an appendage move')
+                logger.debug(f'      This trait is an appendage {trait_name}')
                 logger.debug(f'         Adding Strike, Jab')
                 move = self.pre_add_move('Strike', trait)
                 self.add_move(move, trait_quality_augment)
@@ -137,11 +172,16 @@ class Slay:
                     self.add_move(move, trait_quality_augment)
 
 
+    def pre_add_move(self, move_name, trait=None, is_body_move=False):
 
-    def pre_add_move(self, move_name, trait):
-        stats_when_using = get_stats_when_using(trait, self)
         move = Move(self.battle.moves_dict[move_name])
-        move.stats_when_using = stats_when_using
+        if is_body_move:
+            move.move_long_name = f'{move_name} with body'
+        else:
+            move.move_long_name = f'{move_name} with {trait['name']}'
+        if not trait:
+            stats_when_using = get_stats_when_using(self, trait)
+            move.stats_when_using = stats_when_using
         return move
 
     def add_move(self, move, trait_quality_augment=None):
@@ -152,40 +192,52 @@ class Slay:
         self.base_moves.append(move)
 
 
-    def use_move(self, move, target):
+    def determine_move_results(self, move, target):
         pass
 
     def get_effect(self, effect):
         pass
 
+    def new_round(self):
+        pass
 
-def get_stats_when_using(trait_dict, slay):
+
+def get_stats_when_using(slay, trait_dict=None):
     slay_stats = slay.current_stats
-    base_stats_when_using = {
-            'STR': slay_stats['STR'] + trait_dict['strength_modifier'],
-            'HAR': slay_stats['HAR'] + trait_dict['hardness_modifier'],
-            'DUR': slay_stats['DUR'] + trait_dict['durability_modifier'],
-            'SPE': slay_stats['SPE'] + trait_dict['speed_modifier'],
-        }
+    if not trait_dict:
+        base_stats_when_using = {
+                'STR': slay_stats['STR'],
+                'HAR': slay_stats['HAR'],
+                'DUR': slay_stats['DUR'],
+                'SPE': slay_stats['SPE'],
+            }
+    else:
+        base_stats_when_using = {
+                'STR': slay_stats['STR'] + trait_dict['strength_modifier'],
+                'HAR': slay_stats['HAR'] + trait_dict['hardness_modifier'],
+                'DUR': slay_stats['DUR'] + trait_dict['durability_modifier'],
+                'SPE': slay_stats['SPE'] + trait_dict['speed_modifier'],
+            }
     return base_stats_when_using
 
-def get_trait_quality_augment(trait_tags):
+
+def get_trait_quality_augment(trait_tags=None):
     # Quality Skew from Trait
     trait_quality_augment = {
         'BLUNT': 0,
         'CUT': 0,
         'PIERCE': 0
     }
+    if trait_tags:
+        if 'Sharp Edge' in trait_tags:
+            trait_quality_augment['BLUNT'] += 0
+            trait_quality_augment['CUT'] += 1
+            trait_quality_augment['PIERCE'] += 0
 
-    if 'Sharp Edge' in trait_tags:
-        trait_quality_augment['BLUNT'] += 0
-        trait_quality_augment['CUT'] += 1
-        trait_quality_augment['PIERCE'] += 0
-
-    if 'Sharp Point' in trait_tags:
-        trait_quality_augment['BLUNT'] += 0
-        trait_quality_augment['CUT'] += 0
-        trait_quality_augment['PIERCE'] += 1
+        if 'Sharp Point' in trait_tags:
+            trait_quality_augment['BLUNT'] += 0
+            trait_quality_augment['CUT'] += 0
+            trait_quality_augment['PIERCE'] += 1
 
     return trait_quality_augment
 
@@ -194,6 +246,7 @@ def get_trait_quality_augment(trait_tags):
 class Move:
     def __init__(self, move_dict):
         self.move_dict = move_dict
+        self.move_long_name = ''
         self.stats_when_using = {
             'STR': 0,
             'HAR': 0,

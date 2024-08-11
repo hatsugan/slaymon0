@@ -199,10 +199,12 @@ def battle_lobby():
     # for slay in battle.player_1.slay_team:
     #     print(slay.base_stats)
     #     print(slay.current_stats)
-    test_slay = Slay(battle, battle.player_1, 'Lascer Helmbeetle')
+
+    test_slay = Slay(battle, battle.player_1, 'Lascer Crab')
     print(test_slay.current_moves)
     for i, move in enumerate(test_slay.current_moves):
         print(f'Move {i} is {move.move_dict['name']}')
+        print(move.move_long_name)
         print(move.stats_when_using)
         print(move.move_properties)
 

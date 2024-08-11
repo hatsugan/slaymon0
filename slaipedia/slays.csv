@@ -1,12 +1,13 @@
-"name","formal_name","species_moves","species_traits","biomass","body_strength","body_durability","body_speed"
-"Mewing Aranoid","Aranoid, Mewing","[]","['Fangs, Greater', 'Fangs, Venomous', 'Shell, Lesser']",20,3,2,20
-"Ozempic Aranoid","Aranoid, Ozempic","[]","['Fangs, Venomous', 'Shell, Lesser', 'Spinneret']",5,1,1,30
-"Jetbeetle, Arson","Arson Jetbeetle","[]","['Shell, Lesser', 'Squirter, Hypergolic']",20,1,2,20
-"Bulwark Crab","Crab, Bulwark","[]","['Claw, Lesser', 'Shell, Greater']",30,2,3,10
-"Lesser Crab","Crab, Lesser","[]","['Claw, Lesser', 'Shell, Lesser']",20,2,2,20
-"Lascer Helmbeetle","Helmbeetle, Lascer","[]","['Horn, Sabre', 'Shell, Lesser']",20,2,3,30
-"Hydrypt","Hydrypt","[]","['Proboscis, Hemopump', 'Shell, Lesser', 'Wings, Membrane']",5,1,1,15
-"Helmbeetle, Lesser ","Lesser Helmbeetle","[]","['Horn, Helmet', 'Shell, Lesser']",20,2,3,30
-"Blimp Medusoid","Medusoid, Blimp","[]","['Buoyancy Sac, Atmospheric', 'Gelatinous', 'Tentacle, Venomous']",5,1,1,10
-"Lesser Scorpoid","Scorpoid, Lesser","[]","['Claw, Lesser', 'Shell, Lesser', 'Sting, Venomous']",10,1,2,30
-"Lascer Squid","Squid, Lascer","[]","['Tentacle, Scimitar']",20,2,1,10
+name,formal_name,species_moves,species_traits,biomass,body_strength,body_durability,body_speed
+Mewing Aranoid,"Aranoid, Mewing",[],"['Fangs, Greater', 'Fangs, Venomous', 'Shell, Lesser']",20.0,3,2,20
+Ozempic Aranoid,"Aranoid, Ozempic",[],"['Fangs, Venomous', 'Shell, Lesser', 'Spinneret']",5.0,1,1,30
+Bulwark Crab,"Crab, Bulwark",[],"['Claw, Lesser', 'Shell, Greater']",30.0,2,3,10
+Lascer Crab,"Crab, Lascer",[],"['Armour, Razor', 'Claw, Shear', 'Shell, Lesser']",15.0,2,2,20
+Lesser Crab,"Crab, Lesser",[],"['Claw, Lesser', 'Shell, Lesser']",20.0,2,2,20
+Lascer Helmbeetle,"Helmbeetle, Lascer",[],"['Horn, Sabre', 'Shell, Lesser']",20.0,2,3,30
+Lesser Helmbeetle,"Helmbeetle, Lesser ",[],"['Horn, Helmet', 'Shell, Lesser']",20.0,2,3,30
+Hydrypt,Hydrypt,[],"['Proboscis, Hemopump', 'Shell, Lesser', 'Wings, Membrane']",5.0,1,1,15
+Arson Jetbeetle,"Jetbeetle, Arson",[],"['Shell, Lesser', 'Squirter, Hypergolic']",20.0,1,2,20
+Blimp Medusoid,"Medusoid, Blimp",[],"['Buoyancy Sac, Atmospheric', 'Gelatinous', 'Tentacle, Venomous']",5.0,1,1,10
+Lesser Scorpoid,"Scorpoid, Lesser",[],"['Claw, Lesser', 'Shell, Lesser', 'Sting, Venomous']",10.0,1,2,30
+Lascer Squid,"Squid, Lascer",[],"['Tentacle, Scimitar']",20.0,2,1,10
