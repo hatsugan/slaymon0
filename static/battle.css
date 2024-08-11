@@ -157,17 +157,81 @@ h1, h2, h3 {
     text-align: center;
 }
 
+/* Moves styling */
+
 .moves {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr;  /* Make each move span the full width */
+    gap: 10px;
     margin-top: 10px;
-    width: 100%
 }
 
 .move-option {
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px; /* Increased padding for better spacing */
+    margin-bottom: 10px;
+    background-color: #d7d7d7;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+    position: relative;
+    border: none; /* Remove any border */
+    outline: none; /* Remove outline */
 }
+
+.move-option:hover {
+    background-color: #adadad;
+}
+
+.move-option.selected {
+    background-color: #53ad58; /* Green color for selected */
+}
+
+.move-power {
+    background-color: #505050; /* Darker color for power bubble */
+    color: white;
+    padding: 5px;
+    border-radius: 25%; /* Circular power bubble */
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.move-name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+/* Tooltip styling */
+.move-tooltip {
+    position: absolute;
+    display: none;
+    background-color: rgba(51, 51, 51, 0.9);
+    color: #fff;
+    padding: 5px;
+    border-radius: 8px;
+    z-index: 1000;
+    font-size: 14px;
+    max-width: 500px;
+    word-wrap: break-word;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Arrow for the tooltip */
+.move-tooltip::after {
+    content: "";
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(51, 51, 51, 0.9) transparent transparent transparent;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 
 .lock-move-button {
     background-color: #28a745;

@@ -203,6 +203,9 @@ class Slay:
         if not trait:
             stats_when_using = get_stats_when_using(self, trait)
             move.stats_when_using = stats_when_using
+            move.parent_trait = 'Body'
+        else:
+            move.parent_trait = trait['name']
         return move
 
     def add_move(self, move, trait_quality_augment=None):
@@ -268,6 +271,7 @@ class Move:
     def __init__(self, move_dict):
         self.move_dict = move_dict
         self.move_long_name = ''
+        self.parent_trait = ''
         self.stats_when_using = {
             'STR': 0,
             'HAR': 0,
