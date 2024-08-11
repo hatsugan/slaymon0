@@ -6,7 +6,7 @@ body {
 }
 
 
-.container {
+.slaipedia-container {
     max-width: 1200px;
     margin: 0 auto;
     background-color: #ffffff;
@@ -43,7 +43,7 @@ h1, h2, h3 {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 340px;
     margin: 0 auto;
     background-color: #ffffff;
     padding: 20px;
@@ -52,9 +52,10 @@ h1, h2, h3 {
 }
 
 .slay-card {
-    width: 100%;
+    width: 300px;
     background-color: #f2f2f2;
     padding: 10px;
+    margin: 10px;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -118,11 +119,11 @@ h1, h2, h3 {
 }
 
 .stat {
-    background-color: #e0e0e0;
+    background-color: #c0c0c0;
     padding: 5px;
     border-radius: 8px;
     text-align: center;
-    width: 40px;
+    width: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -138,6 +139,10 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
+.stat-wide {
+    width: 60px; /* Make the speed stat wider */
+}
+
 .traits {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -146,7 +151,7 @@ h1, h2, h3 {
 }
 
 .trait {
-    background-color: #d0e0f0;
+    background-color: #c0c0c0;
     padding: 5px;
     border-radius: 5px;
     text-align: center;
@@ -157,6 +162,7 @@ h1, h2, h3 {
     flex-direction: column;
     align-items: flex-start;
     margin-top: 10px;
+    width: 100%
 }
 
 .move-option {

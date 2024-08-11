@@ -215,7 +215,7 @@ def battle_lobby():
         print(move.move_properties)
 
     # Pass the dictionaries to the template
-    return render_template('battle_lobby.html', slays=battle.player_1.slay_team, traits_dict=battle_traits_dict)
+    return render_template('battle_lobby.html', player1_slays=battle.player_1.slay_team, player2_slays=battle.player_2.slay_team, slays_dict=battle_slays_dict, traits_dict=battle_traits_dict, moves_dict=battle_moves_dict)
 
 
 @app.route('/battle')

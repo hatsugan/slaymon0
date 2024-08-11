@@ -128,7 +128,7 @@ h1, h2, h3 {
 
 .health-bar {
     width: 100%;
-    background-color: #e0e0e0;
+    background-color: #6c6c6c;
     border-radius: 8px;
     overflow: hidden;
     margin: 5px 0;
@@ -137,7 +137,7 @@ h1, h2, h3 {
 
 .health {
     height: 20px;
-    background-color: #76c7c0;
+    background-color: #44726f;
     border-radius: 8px;
 }
 
@@ -149,7 +149,7 @@ h1, h2, h3 {
     width: 100%;
     text-align: center;
     line-height: 20px;
-    color: black; /* Use black or a contrasting color for better visibility */
+    color: white; /* Use black or a contrasting color for better visibility */
 }
 
 .stats {

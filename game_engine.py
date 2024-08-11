@@ -75,9 +75,10 @@ class Slay:
     def __init__(self, battle, player, name, nickname=None):
         self.battle = battle
         self.player = player
+        self.name = name
         logger.info(f'{name} slay created for {player.name}')
         if nickname is None:
-            self.nickname = name
+            self.nickname = f"{name} {len(self.player.slay_team)}"
         logger.info(f'   Nickname is: {self.nickname} ')
         self.turns_alive = 0
         self.effects = []

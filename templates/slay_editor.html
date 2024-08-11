@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='slaipedia.css') }}">
 </head>
 <body>
-    <div class="container">
+    <div class="slaipedia-container">
         <h1>Edit Traits and Stats for {{ slay['name'] }}</h1>
         <form method="post" action="{{ url_for('slay_editor', slay_name=slay['name']) }}">
             <h2>Edit Stats</h2>
