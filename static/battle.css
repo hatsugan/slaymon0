@@ -29,3 +29,150 @@ body {
 .button-link:hover {
     background-color: #0056b3;
 }
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.slay-card {
+    width: 100%;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.slay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.biomass-bubble {
+    background-color: #6492c4;
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.slay-image img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.health-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 5px 0;
+    position: relative;
+}
+
+.health {
+    height: 20px;
+    background-color: #76c7c0;
+    border-radius: 8px;
+}
+
+.health-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: black;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.stat {
+    background-color: #e0e0e0;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: small;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: large;
+    font-weight: bold;
+}
+
+.traits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.trait {
+    background-color: #d0e0f0;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.moves {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.move-option {
+    margin-bottom: 5px;
+}
+
+.lock-move-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.lock-move-button:hover {
+    background-color: #218838;
+}

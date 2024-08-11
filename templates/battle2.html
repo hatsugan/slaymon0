@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +8,131 @@
     <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
 </head>
 <body>
+    <div class="container">
+        <h1>Slay Battle</h1>
+        <div class="content">
+            <div class="player-section">
+                <h2 class="player-section-title">Player</h2>
+                <div class="slay-card">
+                    <img src="{{ url_for('static', filename='images/' + player.image) }}" alt="{{ player.name }}">
+                    <h3>{{ player.name }}</h3>
+                    <div class="health-bar">
+                        <div class="health" style="width: {{ player.health / player.max_health * 100 }}%;"></div>
+                        <div class="health-text">{{ "%.1f" % player.health }}/{{ "%.1f" % player.max_health }}</div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">S T R</div>
+                            <div class="stat-value">{{ player.strength }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">H A R</div>
+                            <div class="stat-value">{{ player.hardness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">T O U</div>
+                            <div class="stat-value">{{ player.toughness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">S P E</div>
+                            <div class="stat-value">{{ player.speed }}</div>
+                        </div>
+                    </div>
+                    <div class="moves">
+                        {% for move in player.moves_dict %}
+                            <a href="{{ url_for('move', move_index=loop.index0) }}" data-description="{{ move['description'] }}" data-type="{{ move['type'] }}">{{ move['name'] }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="switch-button">
+                        <a href="{{ url_for('switch') }}" class="switch-button">Switch</a>
+                    </div>
+                </div>
+                <div class="player-team">
+                    <h3>Your Team</h3>
+                    <div class="team-list">
+                        {% for slay in battle.player1.slays %}
+                            <div class="team-slay">
+                                <img src="{{ url_for('static', filename='images/' + slay.image) }}" alt="{{ slay.name }}">
+                                <h4>{{ slay.name }}</h4>
+                                <div class="health-bar">
+                                    <div class="health" style="width: {{ slay.health / slay.max_health * 100 }}%;"></div>
+                                    <div class="health-text">{{ "%.1f" % slay.health }}/{{ "%.1f" % slay.max_health }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="enemy-section">
+                <h2 class="player-section-title">Opponent</h2>
+                <div class="slay-card">
+                    <img src="{{ url_for('static', filename='images/' + opponent.image) }}" alt="{{ opponent.name }}">
+                    <h3>{{ opponent.name }}</h3>
+                    <div class="health-bar">
+                        <div class="health" style="width: {{ opponent.health / opponent.max_health * 100 }}%;"></div>
+                        <div class="health-text">{{ "%.1f" % opponent.health }}/{{ "%.1f" % opponent.max_health }}</div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">S T R</div>
+                            <div class="stat-value">{{ opponent.strength }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">H A R</div>
+                            <div class="stat-value">{{ opponent.hardness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">D U R</div>
+                            <div class="stat-value">{{ opponent.toughness }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">S P E</div>
+                            <div class="stat-value">{{ opponent.speed }}</div>
+                        </div>
+                    </div>
+                    <div class="moves_opponent">
+                        {% for move in opponent.moves_dict %}
+                            <a data-description="{{ move['description'] }}" data-type="{{ move['type'] }}">{{ move['name'] }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="opponent-team">
+                    <h3>Opponent's Team</h3>
+                    <div class="team-list">
+                        {% for slay in battle.player2.slays %}
+                            <div class="team-slay">
+                                <img src="{{ url_for('static', filename='images/' + slay.image) }}" alt="{{ slay.name }}">
+                                <h4>{{ slay.name }}</h4>
+                                <div class="health-bar">
+                                    <div class="health" style="width: {{ slay.health / slay.max_health * 100 }}%;"></div>
+                                    <div class="health-text">{{ "%.1f" % slay.health }}/{{ "%.1f" % slay.max_health }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="battle-log" id="battle-log">
+                <h2>Battle Log</h2>
+                <ul>
+                    {% for entry in battle.log %}
+                    <li>{{ entry|safe }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% if battle.is_battle_over() %}
+            <div class="result">
+                {% if player.is_fainted() %}
+                    <h2>You Lost!</h2>
+                {% else %}
+                    <h2>You Won!</h2>
+                {% endif %}
+                <a href="{{ url_for('rematch') }}" class="rematch">Rematch</a>
+            </div>
+        {% endif %}
+    </div>
 
+    <div id="tooltip" class="tooltip"></div>
 </body>
 </html>

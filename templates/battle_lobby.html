@@ -3,17 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slaypedia</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='battle.css') }}">
+    <title>Slay Battle</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='battle.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Prepare to Battle</h1>
-        <div class="link-container">
-            <h2>This is your team:</h2>
-            hi, hi, hi, hi
-            <a href="{{ url_for('slays_viewer') }}" class="button-link">START</a>
-        </div>
-    </div>
+        <h1>Slay Battle</h1>
+        {% for slay in slays %}
+            <div class="slay-card">
+                <h2>{{ slay.nickname }}</h2>
+                <div class="slay-card">
+                    <!-- Slay Name and Biomass -->
+                    <div class="slay-header">
+                        <h2>{{ slay.nickname }}</h2>
+                        <div class="biomass-bubble">{{ slay.current_stats['biomass'] }}</div>
+                    </div>
+
+                    <!-- Slay Image -->
+                    <div class="slay-image">
+                        <img src="{{ url_for('static', filename='images/' + slay.nickname|lower + '.png') }}" alt="{{ slay.nickname }}">
+                    </div>
+
+                    <!-- Health Bar -->
+                    <div class="health-bar">
+                        <div class="health" style="width: {{ slay.current_stats['health'] / slay.base_stats['health'] * 100 }}%;"></div>
+                        <div class="health-text">{{ "%.1f" % slay.current_stats['health'] }}/{{ "%.1f" % slay.base_stats['health'] }}</div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-label">STR</div>
+                            <div class="stat-value">{{ slay.current_stats['STR'] }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">HAR</div>
+                            <div class="stat-value">{{ slay.current_stats['HAR'] }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">DUR</div>
+                            <div class="stat-value">{{ slay.current_stats['DUR'] }}</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">SPE</div>
+                            <div class="stat-value">{{ slay.current_stats['SPE'] }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Traits Grid -->
+                    <div class="traits">
+                        {% for trait in slay.current_traits %}
+                            <div class="trait">{{ trait }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Moves List -->
+                    <div class="moves">
+                        <form method="post" action="{{ url_for('lock_in_move') }}">
+                            {% for move in slay.current_moves %}
+                                <div class="move-option">
+                                    <input type="radio" name="selected_move" id="move_{{ loop.index }}" value="{{ move.move_long_name }}">
+                                    <label for="move_{{ loop.index }}">{{ move.move_long_name }}</label>
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="lock-move-button">Lock In Move</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
 </body>
 </html>

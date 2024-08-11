@@ -184,38 +184,48 @@ def slay_editor(slay_name):
 
 
 @app.route('/')
-# @app.route('/battle_lobby')
 def battle_lobby():
     logger.debug('Battle lobby route hit')
 
     global battle
+    global slays_dict, traits_dict, moves_dict
 
     # Reload the slays and traits dictionaries
     battle_slays_dict, battle_traits_dict, battle_moves_dict = reload_slaipedia()
-    print(battle_moves_dict)
 
+    # Initialize the battle
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
-    # battle.give_player_random_team(battle.player_1)
-    # for slay in battle.player_1.slay_team:
-    #     print(slay.base_stats)
-    #     print(slay.current_stats)
+    battle.give_player_team_from_list(battle.player_1, ['Lesser Crab', 'Lascer Squid'])
+    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab', 'Bulwark Crab'])
 
+    # Debugging output
+    for slay in battle.player_1.slay_team:
+        print(slay.base_stats)
+        print(slay.current_stats)
+
+    # Test with a specific Slay
     test_slay = Slay(battle, battle.player_1, 'Lascer Crab')
     print(test_slay.current_moves)
+
+    # Correct the access to move_dict['name']
     for i, move in enumerate(test_slay.current_moves):
-        print(f'Move {i} is {move.move_dict['name']}')
+        print(f'Move {i} is {move.move_dict["name"]}')
         print(move.move_long_name)
         print(move.stats_when_using)
         print(move.move_properties)
 
-
-    return render_template('battle_lobby.html', slays_dict=slays_dict, traits_dict=traits_dict)
+    # Pass the dictionaries to the template
+    return render_template('battle_lobby.html', slays=battle.player_1.slay_team, traits_dict=battle_traits_dict)
 
 
 @app.route('/battle')
 def battle():
-    pass
+    return render_template('battle.html', slays_dict=slays_dict, traits_dict=traits_dict)
 
+
+@app.route('/lock_in_move')
+def lock_in_move():
+    pass
 
 if __name__ == '__main__':
     slays_dict, traits_dict, moves_dict = reload_slaipedia()

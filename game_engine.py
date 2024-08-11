@@ -38,6 +38,13 @@ class Battle:
             name,
         ) for name in self.get_random_team_name_list(4)]
 
+    def give_player_team_from_list(self, player, list_slay_names):
+        player.slay_team = [Slay(
+            self,
+            player,
+            name,
+        ) for name in list_slay_names]
+
 
 class Player:
     def __init__(self, name):
