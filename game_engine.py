@@ -90,15 +90,28 @@ class Slay:
         self.base_traits = slay_species_dict['species_traits']
         self.base_moves = []
 
-        self.compute_stats_from_traits()
+        print(f'Stas before traits{self.base_stats}')
+
+        self.compute_stats_from_traits(self.base_stats)
         self.populate_moves_from_traits()
+
+        print(f'Stas after traits{self.base_stats}')
 
         self.current_traits = self.base_traits
         self.current_moves = self.base_moves
 
-    def compute_stats_from_traits(self):
+    def compute_stats_from_traits(self, stats):
         # dont forget minimums
-        pass
+        logger.debug(f"Computing {self.nickname}'s stats based on its traits")
+        traits_dict = self.battle.traits_dict
+        for trait_name in self.base_traits:
+            trait = traits_dict[trait_name]
+            trait_tags = trait['trait_tags']
+            if 'Body Modifier' in trait_tags:
+                stats['STR'] += trait['strength_modifier']
+                stats['HAR'] += trait['hardness_modifier']
+                stats['DUR'] += trait['durability_modifier']
+                stats['SPE'] += trait['speed_modifier']
 
     def populate_moves_from_traits(self):
         logger.debug(f"Populating {self.nickname}'s moves")
