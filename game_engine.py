@@ -201,11 +201,11 @@ class Slay:
         else:
             move.move_long_name = f'{move_name} with {trait['name']}'
         if not trait:
-            stats_when_using = get_stats_when_using(self, trait)
-            move.stats_when_using = stats_when_using
             move.parent_trait = 'Body'
         else:
             move.parent_trait = trait['name']
+        stats_when_using = get_stats_when_using(self, is_body_move, trait)
+        move.stats_when_using = stats_when_using
         return move
 
     def add_move(self, move, trait_quality_augment=None):
@@ -226,22 +226,42 @@ class Slay:
         pass
 
 
-def get_stats_when_using(slay, trait_dict=None):
+def get_stats_when_using(slay, is_body_move, trait_dict=None):
     slay_stats = slay.current_stats
-    if not trait_dict:
+    if trait_dict:
+        if is_body_move:  # Body move with body modifier trait
+            base_stats_when_using = {
+                    'STR': slay_stats['STR'] + trait_dict['strength_modifier'],
+                    'HAR': slay_stats['HAR'] + trait_dict['hardness_modifier'],
+                    'DUR': slay_stats['DUR'] + trait_dict['durability_modifier'],
+                    'SPE': slay_stats['SPE'] + trait_dict['speed_modifier'],
+                }
+        else:  # Non Body move with trait
+            base_stats_when_using = {
+                    'STR': slay_stats['STR'] + trait_dict['strength_modifier'],  # STR always comes from current slay STR
+                    'HAR': trait_dict['hardness_modifier'],
+                    'DUR': trait_dict['durability_modifier'],
+                    'SPE': slay_stats['SPE'] + trait_dict['speed_modifier'],  # SPE always comes from current slay SPE
+                }
+
+    else: # Move without trait
         base_stats_when_using = {
                 'STR': slay_stats['STR'],
                 'HAR': slay_stats['HAR'],
                 'DUR': slay_stats['DUR'],
                 'SPE': slay_stats['SPE'],
             }
-    else:
-        base_stats_when_using = {
-                'STR': slay_stats['STR'] + trait_dict['strength_modifier'],
-                'HAR': slay_stats['HAR'] + trait_dict['hardness_modifier'],
-                'DUR': slay_stats['DUR'] + trait_dict['durability_modifier'],
-                'SPE': slay_stats['SPE'] + trait_dict['speed_modifier'],
-            }
+
+    # Ensure good data
+    if base_stats_when_using['STR'] < 0:
+        base_stats_when_using['STR'] = 0
+    if base_stats_when_using['HAR'] < 0:
+        base_stats_when_using['HAR'] = 0
+    if base_stats_when_using['DUR'] < 0:
+        base_stats_when_using['DUR'] = 0
+    if base_stats_when_using['STR'] < 1:
+        base_stats_when_using['SPE'] = 1
+
     return base_stats_when_using
 
 
