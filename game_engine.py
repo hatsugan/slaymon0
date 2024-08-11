@@ -13,10 +13,10 @@ class Battle:
                  player_2_name='Opponent'):
         self.player_1 = Player(player_1_name)
         self.player_2 = Player(player_2_name)
-        self.slays_dict = slays_dict
-        self.slays_list = list(self.slays_dict.keys())
-        self.traits_dict = traits_dict
-        self.moves_dict = moves_dict
+        self.battle_slays_dict = slays_dict
+        self.slays_list = list(self.battle_slays_dict.keys())
+        self.battle_traits_dict = traits_dict
+        self.battle_moves_dict = moves_dict
         self.round_count = 0
         self.round_log = []
         self.log = []
@@ -82,7 +82,7 @@ class Slay:
         logger.info(f'   Nickname is: {self.nickname} ')
         self.turns_alive = 0
         self.effects = []
-        slay_species_dict = battle.slays_dict[name]
+        slay_species_dict = battle.battle_slays_dict[name]
 
         self.base_stats = {
             'biomass': slay_species_dict['biomass'],
@@ -111,7 +111,7 @@ class Slay:
     def compute_stats_from_traits(self, stats):
         # dont forget minimums
         logger.debug(f"Computing {self.nickname}'s stats based on its traits")
-        traits_dict = self.battle.traits_dict
+        traits_dict = self.battle.battle_traits_dict
         for trait_name in self.base_traits:
             trait = traits_dict[trait_name]
             trait_tags = trait['trait_tags']
@@ -123,7 +123,7 @@ class Slay:
 
     def populate_moves_from_traits(self):
         logger.debug(f"Populating {self.nickname}'s moves")
-        traits_dict = self.battle.traits_dict
+        traits_dict = self.battle.battle_traits_dict
 
         # Body Moves
         # Quality Augment from Trait
@@ -195,7 +195,7 @@ class Slay:
 
     def pre_add_move(self, move_name, trait=None, is_body_move=False):
 
-        move = Move(self.battle.moves_dict[move_name])
+        move = Move(self.battle.battle_moves_dict[move_name])
         if is_body_move:
             move.move_long_name = f'{move_name} with body'
         else:
@@ -333,7 +333,7 @@ class Move:
 #         self.durability = self.base_durability
 #         self.speed = self.base_speed
 #         self.moves = self.base_moves
-#         self.moves_dict = convert_moves_to_dict(moves)
+#         self.battle_moves_dict = convert_moves_to_dict(moves)
 #         self.abilities = self.base_abilities
 #
 #     def generate_image_filename(self):

@@ -195,8 +195,8 @@ def battle_lobby():
 
     # Initialize the battle
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
-    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab'])  #, 'Hydrypt', 'Arson Jetbeetle'])
-    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab'])  #, 'Bulwark Crab'])
+    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab', 'Hydrypt', 'Arson Jetbeetle', 'Lesser Helmbeetle'])
+    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab', 'Bulwark Crab', 'Lesser Scorpoid', 'Lascer Crab'])
 
     # Debugging output
     for slay in battle.player_1.slay_team:
@@ -215,7 +215,7 @@ def battle_lobby():
     #     print(move.move_properties)
 
     # Pass the dictionaries to the template
-    return render_template('battle_lobby.html', player1_slays=battle.player_1.slay_team, player2_slays=battle.player_2.slay_team, battle_slays_dict=battle_slays_dict, battle_traits_dict=battle_traits_dict, battle_moves_dict=battle_moves_dict)
+    return render_template('battle_lobby.html', battle=battle)
 
 
 @app.route('/battle')

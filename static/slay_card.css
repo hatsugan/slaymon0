@@ -1,0 +1,164 @@
+.slay-card {
+    width: 300px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.slay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.biomass-bubble {
+    background-color: #6492c4;
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.slay-image img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.health-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 5px 0;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.health {
+    height: 20px;
+    background-color: #76c7c0;
+    border-radius: 8px;
+}
+
+.health-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.stat {
+    background-color: #c0c0c0;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+    font-size: small;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: large;
+    font-weight: bold;
+}
+
+.stat-wide {
+    width: 60px; /* Make the speed stat wider */
+}
+
+.traits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.trait {
+    background-color: #c0c0c0;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the text both vertically and horizontally */
+}
+
+/* Moves styling */
+
+.moves {
+    display: grid;
+    grid-template-columns: 1fr;  /* Make each move span the full width */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.move-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px; /* Increased padding for better spacing */
+    margin-bottom: 10px;
+    background-color: #d7d7d7;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+    position: relative;
+    border: none; /* Remove any border */
+    outline: none; /* Remove outline */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.move-option:hover {
+    background-color: #adadad;
+}
+
+.move-option.selected {
+    background-color: #53ad58; /* Green color for selected */
+}
+
+.move-power {
+    background-color: #505050; /* Darker color for power bubble */
+    color: white;
+    padding: 5px;
+    border-radius: 25%; /* Circular power bubble */
+    font-weight: bold;
+    margin-right: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.move-name {
+    flex-grow: 1;
+    text-align: left;
+}

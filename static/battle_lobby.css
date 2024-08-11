@@ -6,31 +6,6 @@ body {
 }
 
 
-.slaipedia-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.button-link {
-    display: inline-block;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.button-link:hover {
-    background-color: #0056b3;
-}
-
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -44,7 +19,7 @@ h1, h2, h3 {
 
 
 .container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -53,22 +28,41 @@ h1, h2, h3 {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px; /* Space between player sections */
 }
 
 .player1-section, .player2-section {
-    width: 35%; /* Adjust as needed */
+    flex: 1; /* Make the sections fill the available space equally */
+    background-color: #9f9f9f;
+    margin: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-.battle-log {
-    width: 25%; /* Adjust as needed */
-    max-height: 600px; /* Set the desired height for the log */
-    overflow-y: auto; /* Enable vertical scrolling */
-    margin: 0 20px; /* Add margin between players and battle log */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+.player_name {
+    background-color: #6e6e6e;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: block; /* Change to block to take up full width */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.5em;
+    font-weight: bold;
+    width: 100%; /* Ensure the name spans the full width */
 }
+
+.slay-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid with minimum column width */
+    grid-gap: 20px; /* Space between cards */
+    width: 100%; /* Ensure the grid takes full width */
+    justify-items: center; /* Center the grid items */
+}
+
 
 .battle-log h2 {
     text-align: center;
@@ -125,8 +119,30 @@ h1, h2, h3 {
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .lock-move-button:hover {
     background-color: #218838;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
+
+
+.begin-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin: 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.begin-button:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+

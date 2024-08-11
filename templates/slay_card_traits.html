@@ -1,7 +1,7 @@
 <!-- Traits Grid -->
 <div class="traits">
     {% for trait in slay.current_traits %}
-        {% set trait_data = battle_traits_dict[trait] %}
+        {% set trait_data = battle.battle_traits_dict[trait] %}
         <div class="trait"
              data-name="{{ trait_data['name'] }}"
              data-cost="{{ trait_data['cost'] }}"

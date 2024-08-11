@@ -15,10 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const tooltipHeight = tooltip.offsetHeight;
         const elementRect = event.target.getBoundingClientRect();
 
+        // Get the current scroll position
+        const scrollTop = window.scrollY;
+        const scrollLeft = window.scrollX;
+
         // Now move the tooltip to the correct position
-        tooltip.style.left = `${elementRect.left + (elementRect.width / 2) - (tooltipWidth / 2)}px`;
-        tooltip.style.top = `${elementRect.top - tooltipHeight - 10}px`; // 10px above the element
-        tooltip.style.display = 'block';
+    tooltip.style.left = `${scrollLeft + elementRect.left + (elementRect.width / 2) - (tooltipWidth / 2)}px`;
+    tooltip.style.top = `${scrollTop + elementRect.top - tooltipHeight - 10}px`; // 10px above the element
+    tooltip.style.display = 'block';
     }
 
 
