@@ -195,7 +195,7 @@ def battle_lobby():
 
     # Initialize the battle
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
-    battle.give_player_team_from_list(battle.player_1, ['Lesser Crab', 'Lascer Squid'])
+    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab', 'Hydrypt', 'Arson Jetbeetle'])
     battle.give_player_team_from_list(battle.player_2, ['Lesser Crab', 'Bulwark Crab'])
 
     # Debugging output
