@@ -42,14 +42,49 @@ h1, h2, h3 {
     text-align: center;
 }
 
+
 .container {
-    max-width: 340px;
+    max-width: 1200px;
     margin: 0 auto;
-    background-color: #ffffff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.battle-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.player1-section, .player2-section {
+    width: 35%; /* Adjust as needed */
+}
+
+.battle-log {
+    width: 25%; /* Adjust as needed */
+    max-height: 600px; /* Set the desired height for the log */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin: 0 20px; /* Add margin between players and battle log */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.battle-log h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.battle-log ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.battle-log li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
 
 .slay-card {
     width: 300px;
@@ -209,15 +244,18 @@ h1, h2, h3 {
 .move-tooltip {
     position: absolute;
     display: none;
-    background-color: rgba(51, 51, 51, 0.9);
-    color: #fff;
-    padding: 5px;
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent background */
+    color: #000000;
+    padding: 10px;
+    border-radius: 4px;
     z-index: 1000;
+    pointer-events: none;
     font-size: 14px;
-    max-width: 500px;
+    max-width: 400px;
     word-wrap: break-word;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Slight shadow for contrast */
+    backdrop-filter: blur(20px); /* Apply blur to the background */
+    -webkit-backdrop-filter: blur(20px); /* Safari support */
 }
 
 /* Arrow for the tooltip */

@@ -1,0 +1,17 @@
+<!-- Traits Grid -->
+<div class="traits">
+    {% for trait in slay.current_traits %}
+        {% set trait_data = battle_traits_dict[trait] %}
+        <div class="trait"
+             data-name="{{ trait_data['name'] }}"
+             data-cost="{{ trait_data['cost'] }}"
+             data-strength="{{ trait_data['strength_modifier'] }}"
+             data-hardness="{{ trait_data['hardness_modifier'] }}"
+             data-durability="{{ trait_data['durability_modifier'] }}"
+             data-speed="{{ trait_data['speed_modifier'] }}"
+             data-tags="{{ trait_data['trait_tags'] | join(', ') }}"
+             data-description="{{ trait_data['description'] }}">
+            {{ trait }}
+        </div>
+    {% endfor %}
+</div>

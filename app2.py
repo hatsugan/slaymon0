@@ -195,27 +195,27 @@ def battle_lobby():
 
     # Initialize the battle
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
-    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab', 'Hydrypt', 'Arson Jetbeetle'])
-    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab', 'Bulwark Crab'])
+    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab'])  #, 'Hydrypt', 'Arson Jetbeetle'])
+    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab'])  #, 'Bulwark Crab'])
 
     # Debugging output
     for slay in battle.player_1.slay_team:
         print(slay.base_stats)
         print(slay.current_stats)
 
-    # Test with a specific Slay
-    test_slay = Slay(battle, battle.player_1, 'Lascer Crab')
-    print(test_slay.current_moves)
-
-    # Correct the access to move_dict['name']
-    for i, move in enumerate(test_slay.current_moves):
-        print(f'Move {i} is {move.move_dict["name"]}')
-        print(move.move_long_name)
-        print(move.stats_when_using)
-        print(move.move_properties)
+    # # Test with a specific Slay
+    # test_slay = Slay(battle, battle.player_1, 'Lascer Crab')
+    # print(test_slay.current_moves)
+    #
+    # # Correct the access to move_dict['name']
+    # for i, move in enumerate(test_slay.current_moves):
+    #     print(f'Move {i} is {move.move_dict["name"]}')
+    #     print(move.move_long_name)
+    #     print(move.stats_when_using)
+    #     print(move.move_properties)
 
     # Pass the dictionaries to the template
-    return render_template('battle_lobby.html', player1_slays=battle.player_1.slay_team, player2_slays=battle.player_2.slay_team, slays_dict=battle_slays_dict, traits_dict=battle_traits_dict, moves_dict=battle_moves_dict)
+    return render_template('battle_lobby.html', player1_slays=battle.player_1.slay_team, player2_slays=battle.player_2.slay_team, battle_slays_dict=battle_slays_dict, battle_traits_dict=battle_traits_dict, battle_moves_dict=battle_moves_dict)
 
 
 @app.route('/battle')

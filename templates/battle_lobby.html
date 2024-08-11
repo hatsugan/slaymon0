@@ -9,91 +9,32 @@
 <body>
     <div class="container">
         <h1>Slay Battle</h1>
-        {% for slay in player1_slays %}
-            <div class="slay-card">
-                <!-- Slay Name and Biomass -->
-                <div class="slay-header">
-                    <h2>{{ slay.nickname }}</h2>
-                </div>
-
-                <!-- Slay Image -->
-                <div class="slay-image">
-                    {% if slay.name %}
-                        <img src="{{ url_for('static', filename='images/' + (slay.name|lower) + '.png') }}" alt="{{ slay.name }} Image Missing">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='images/default.png') }}" alt="Default Image">
-                    {% endif %}
-                </div>
-
-                <!-- Health Bar -->
-                <div class="health-bar">
-                    <div class="health" style="width:{{ slay.current_stats['health'] / slay.base_stats['health'] * 100 }}%;"></div>
-                    <div class="health-text">{{ "%.1f" % slay.current_stats['health'] }}/{{ "%.0f" % slay.base_stats['health'] }}</div>
-                </div>
-
-
-                <!-- Stats Grid -->
-                <div class="stats">
-                    <div class="stat stat-wide">
-                        <div class="stat-label">BIOMASS</div>
-                        <div class="stat-value">{{ slay.current_stats['biomass'] }}</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">STR</div>
-                        <div class="stat-value">{{ slay.current_stats['STR'] }}</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">HAR</div>
-                        <div class="stat-value">{{ slay.current_stats['HAR'] }}</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">DUR</div>
-                        <div class="stat-value">{{ slay.current_stats['DUR'] }}</div>
-                    </div>
-                    <div class="stat stat-wide"> <!-- Add a special class for speed -->
-                        <div class="stat-label">SPEED</div>
-                        <div class="stat-value">{{ slay.current_stats['SPE'] }}</div>
-                    </div>
-                </div>
-
-                <!-- Traits Grid -->
-                <div class="traits">
-                    {% for trait in slay.current_traits %}
-                        <div class="trait">{{ trait }}</div>
-                    {% endfor %}
-                </div>
-
-                <!-- Moves List -->
-                <div class="moves">
-                    <form method="post" action="{{ url_for('lock_in_move') }}">
-                        {% for move in slay.current_moves %}
-                            <button type="button"
-                                    class="move-option"
-                                    data-name="{{ move.move_dict['name'] }}"
-                                    data-power="{{ move.move_properties['POWER'] }}"
-                                    data-recoil="{{ move.move_properties['RECOIL'] }}"
-                                    data-blunt="{{ move.move_properties['BLUNT'] }}"
-                                    data-cut="{{ move.move_properties['CUT'] }}"
-                                    data-pierce="{{ move.move_properties['PIERCE'] }}"
-                                    data-long-name="{{ move.move_long_name }}"
-                                    data-trait="{{ move.parent_trait }}"
-                                    data-str="{{ move.stats_when_using['STR'] }}"
-                                    data-har="{{ move.stats_when_using['HAR'] }}"
-                                    data-dur="{{ move.stats_when_using['DUR'] }}"
-                                    data-spe="{{ move.stats_when_using['SPE'] }}"
-                                    data-description="{{ move.move_dict['description'] }}">
-                                <span class="move-power">{{ move.move_properties['POWER'] }}</span>
-                                <span class="move-name">{{ move.move_long_name }}</span>
-                            </button>
-                        {% endfor %}
-                        <input type="hidden" name="selected_move" id="selected_move_input" value="">
-                        <button type="submit" class="lock-move-button">Lock In Move</button>
-                    </form>
-                </div>
+        <div class="battle-area">
+            <div class="player1-section">
+                {% for slay in player1_slays %}
+                    {% include 'slay_card_full.html' %}
+                {% endfor %}
             </div>
-        {% endfor %}
+
+            <div class="battle-log">
+                <h2>Battle Log</h2>
+                <ul>
+                    {% for entry in battle_log %}
+                        <li>{{ entry }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="player2-section">
+                {% for slay in player2_slays %}
+                    {% include 'slay_card_full.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <!-- Tooltip Container -->
     <div id="move-tooltip" class="move-tooltip"></div>
-<script src="{{ url_for('static', filename='battle.js') }}"></script>
+    <script src="{{ url_for('static', filename='tooltips.js') }}"></script>
 </body>
 </html>

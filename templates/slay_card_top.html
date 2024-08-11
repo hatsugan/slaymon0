@@ -1,0 +1,43 @@
+<!-- Slay Name and Biomass -->
+<div class="slay-header">
+    <h3>{{ slay.nickname }}</h3>
+</div>
+
+<!-- Slay Image -->
+<div class="slay-image">
+    {% if slay.name %}
+        <img src="{{ url_for('static', filename='images/' + (slay.name|lower) + '.png') }}" alt="{{ slay.name }} Image Missing">
+    {% else %}
+        <img src="{{ url_for('static', filename='images/default.png') }}" alt="Default Image">
+    {% endif %}
+</div>
+
+<!-- Health Bar -->
+<div class="health-bar">
+    <div class="health" style="width:{{ slay.current_stats['health'] / slay.base_stats['health'] * 100 }}%;"></div>
+    <div class="health-text">{{ "%.1f" % slay.current_stats['health'] }}/{{ "%.0f" % slay.base_stats['health'] }}</div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats">
+    <div class="stat stat-wide">
+        <div class="stat-label">BIOMASS</div>
+        <div class="stat-value">{{ slay.current_stats['biomass'] }}</div>
+    </div>
+    <div class="stat">
+        <div class="stat-label">STR</div>
+        <div class="stat-value">{{ slay.current_stats['STR'] }}</div>
+    </div>
+    <div class="stat">
+        <div class="stat-label">HAR</div>
+        <div class="stat-value">{{ slay.current_stats['HAR'] }}</div>
+    </div>
+    <div class="stat">
+        <div class="stat-label">DUR</div>
+        <div class="stat-value">{{ slay.current_stats['DUR'] }}</div>
+    </div>
+    <div class="stat stat-wide"> <!-- Add a special class for speed -->
+        <div class="stat-label">SPEED</div>
+        <div class="stat-value">{{ slay.current_stats['SPE'] }}</div>
+    </div>
+</div>

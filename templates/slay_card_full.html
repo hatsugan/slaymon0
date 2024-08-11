@@ -1,0 +1,35 @@
+<!-- slay_card.html -->
+<div class="slay-card">
+    {% include 'slay_card_top.html' %}
+
+    <!-- Traits Grid -->
+    {% include 'slay_card_traits.html' %}
+
+    <!-- Moves List -->
+    <div class="moves">
+        <form method="post" action="{{ url_for('lock_in_move') }}">
+            {% for move in slay.current_moves %}
+                <button type="button"
+                        class="move-option"
+                        data-name="{{ move.move_dict['name'] }}"
+                        data-power="{{ move.move_properties['POWER'] }}"
+                        data-recoil="{{ move.move_properties['RECOIL'] }}"
+                        data-blunt="{{ move.move_properties['BLUNT'] }}"
+                        data-cut="{{ move.move_properties['CUT'] }}"
+                        data-pierce="{{ move.move_properties['PIERCE'] }}"
+                        data-long-name="{{ move.move_long_name }}"
+                        data-trait="{{ move.parent_trait }}"
+                        data-str="{{ move.stats_when_using['STR'] }}"
+                        data-har="{{ move.stats_when_using['HAR'] }}"
+                        data-dur="{{ move.stats_when_using['DUR'] }}"
+                        data-spe="{{ move.stats_when_using['SPE'] }}"
+                        data-description="{{ move.move_dict['description'] }}">
+                    <span class="move-power">{{ move.move_properties['POWER'] }}</span>
+                    <span class="move-name">{{ move.move_long_name }}</span>
+                </button>
+            {% endfor %}
+            <input type="hidden" name="selected_move" id="selected_move_input" value="">
+            <button type="submit" class="lock-move-button">Lock In Move</button>
+        </form>
+    </div>
+</div>
