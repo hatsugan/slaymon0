@@ -13,6 +13,7 @@
             <tr>
                 <th>Name</th>
                 <th>Biomass (species)</th>
+                <th>Health (species)</th>
                 <th>STR (body)</th>
                 <th>DUR (body)</th>
                 <th>SPE (body)</th>
@@ -24,6 +25,7 @@
             <tr>
                 <td>{{ slay['name'] }}</td>
                 <td>{{ slay['biomass'] }} <span class="cost-bubble">{{ slay['biomass_cost'] }}</span></td>
+                <td>{{ slay['species_health'] }} </td>
                 <td>{{ slay['body_strength'] }}</td>
                 <td>{{ slay['body_durability'] }}</td>
                 <td>{{ slay['body_speed'] }}</td>
@@ -37,7 +39,7 @@
                 <td>
                     <ul>
                     {% for trait in slay['species_traits'] %}
-                        <li>
+                        <li id="trait-{{ loop.index }}" class="trait-item" data-description="{{ traits_dict[trait]['description'] }}">
                             <span class="cost-bubble">{{ traits_dict[trait]['cost'] }}</span> {{trait}}
                         </li>
                     {% endfor %}
@@ -52,5 +54,39 @@
             {% endfor %}
         </table>
     </div>
+
+    <!-- Tooltip div -->
+    <div id="tooltip" style="position:absolute; display:none; background-color:rgba(0,0,0,0.8); color:#fff; padding:10px; border-radius:5px;">This is a custom tooltip!</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltip = document.getElementById('tooltip');
+
+            // Handle right-click on any trait item
+            document.querySelectorAll('.trait-item').forEach(function (traitItem) {
+                traitItem.addEventListener('contextmenu', function (event) {
+                    event.preventDefault();  // Prevent the default context menu from appearing
+
+                    // Get the description from the data attribute
+                    const description = this.getAttribute('data-description');
+
+                    // Set the tooltip content
+                    tooltip.innerHTML = description;
+
+                    // Set the position of the tooltip
+                    tooltip.style.left = event.pageX + 'px';
+                    tooltip.style.top = event.pageY + 'px';
+
+                    // Show the tooltip
+                    tooltip.style.display = 'block';
+                });
+            });
+
+            // Hide the tooltip when clicking anywhere else on the page
+            document.addEventListener('click', function () {
+                tooltip.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
