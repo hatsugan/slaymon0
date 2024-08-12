@@ -86,7 +86,7 @@ class Player:
 
     def switch_next_living_slay(self):
         for i, slay in enumerate(self.slays):
-            if not slay.is_fainted():
+            if not slay.check_is_dead():
                 self.chosen_switch_index = i
                 logging.debug(f"{self.name} will switch to slay #{i}")
                 self.switch_slay()
@@ -96,7 +96,7 @@ class Player:
 
 
     def is_defeated(self):
-        return all(slay.is_fainted() for slay in self.slays)
+        return all(slay.check_is_dead() for slay in self.slays)
 
 class Battle:
     def __init__(self, player1, player2, move_handler):
@@ -187,23 +187,23 @@ class Battle:
                                f"{defender.name}'s")
 
                 # Handle slay death
-                if attacker.active_slay.is_fainted() and defender.active_slay.is_fainted():
+                if attacker.active_slay.check_is_dead() and defender.active_slay.check_is_dead():
                     self.round_log.append(
                         f"Both slays died! Yeesh!")
                     break
-                elif attacker.active_slay.is_fainted():
+                elif attacker.active_slay.check_is_dead():
                     self.round_log.append(f"{attacker.name}'s {attacker.active_slay.name} died!")
                     break
-                elif defender.active_slay.is_fainted():
+                elif defender.active_slay.check_is_dead():
                     self.round_log.append(f"{defender.name}'s {defender.active_slay.name} died!")
                     break
 
         # Check win condition, otherwise switch
         if not self.player1.is_defeated() or not self.player2.is_defeated():
-            if self.player1.active_slay.is_fainted():
+            if self.player1.active_slay.check_is_dead():
                 self.player1.switch_next_living_slay()
                 self.round_log.append(f"{self.player1.name} switched to {self.player1.active_slay.name}")
-            if self.player2.active_slay.is_fainted():
+            if self.player2.active_slay.check_is_dead():
                 self.player2.switch_next_living_slay()
                 self.round_log.append(f"{self.player2.name} switched to {self.player2.active_slay.name}")
 

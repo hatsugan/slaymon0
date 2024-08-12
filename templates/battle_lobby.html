@@ -11,22 +11,24 @@
     <div class="container">
 
         <h1>Slaic Battle Simulation - Lobby</h1>
-        <button class="begin-button">BEGIN</button>
+        <a href="{{ url_for('battle') }}" class="begin-button">BEGIN</a>
 
         <div class="battle-area">
             <div class="player1-section">
-                <div class="player_name">{{battle.player_1.name}}'s Team</div>
+                <div class="player_name">{{battle.player1.name}}'s Team</div>
                 <div class="slay-cards-container">
-                    {% for slay in battle.player_1.slay_team %}
+                    {% for slay in battle.player1.slay_team %}
                         {% include 'slay_card_full.html' %}
                     {% endfor %}
                 </div>
             </div>
 
+
+
             <div class="player2-section">
-                <div class="player_name">{{battle.player_2.name}}'s Team</div>
+                <div class="player_name">{{battle.player2.name}}'s Team</div>
                 <div class="slay-cards-container">
-                    {% for slay in battle.player_2.slay_team %}
+                    {% for slay in battle.player2.slay_team %}
                         {% include 'slay_card_full.html' %}
                     {% endfor %}
                 </div>

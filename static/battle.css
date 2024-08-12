@@ -1,3 +1,4 @@
+/* Basic Reset and Body Styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -5,62 +6,64 @@ body {
     padding: 20px;
 }
 
-
-.slaipedia-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.button-link {
-    display: inline-block;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.button-link:hover {
-    background-color: #0056b3;
-}
-
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-}
-
+/* Heading Styling */
 h1, h2, h3 {
     text-align: center;
 }
 
-
+/* Container for Overall Layout */
 .container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 20px;
 }
 
+/* Battle Area Styling */
 .battle-area {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px; /* Space between player sections */
 }
 
+/* Player Sections (Left and Right) */
 .player1-section, .player2-section {
-    width: 35%; /* Adjust as needed */
+    flex: 1; /* Make the sections fill the available space equally */
+    background-color: #9f9f9f;
+    margin: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
+/* Player Name Styling */
+.player_name {
+    background-color: #6e6e6e;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: block; /* Change to block to take up full width */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.5em;
+    font-weight: bold;
+    width: 100%; /* Ensure the name spans the full width */
+}
+
+/* Slay Cards Container Styling */
+.slay-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid with minimum column width */
+    grid-gap: 20px; /* Space between cards */
+    width: 100%; /* Ensure the grid takes full width */
+    justify-items: center; /* Center the grid items */
+}
+
+/* Battle Log Styling */
 .battle-log {
-    width: 25%; /* Adjust as needed */
+    width: 40%; /* Adjust as needed */
     max-height: 600px; /* Set the desired height for the log */
     overflow-y: auto; /* Enable vertical scrolling */
     margin: 0 20px; /* Add margin between players and battle log */
@@ -85,8 +88,27 @@ h1, h2, h3 {
     font-size: 14px;
 }
 
+.battle-log .turn-heading {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em; /* Slightly larger font size */
+}
 
-/* Tooltip styling */
+.battle-log .win {
+    font-weight: bold;
+    text-align: center;
+    color: #0ba44e;
+    font-size: 1.0em; /* Slightly larger font size */
+}
+
+.battle-log .lose {
+    font-weight: bold;
+    text-align: center;
+    color: #ab0f0f;
+    font-size: 1.0em; /* Slightly larger font size */
+}
+
+/* Tooltip Styling */
 .move-tooltip {
     position: absolute;
     display: none;
@@ -104,7 +126,7 @@ h1, h2, h3 {
     -webkit-backdrop-filter: blur(20px); /* Safari support */
 }
 
-/* Arrow for the tooltip */
+/* Tooltip Arrow Styling */
 .move-tooltip::after {
     content: "";
     position: absolute;
@@ -116,7 +138,7 @@ h1, h2, h3 {
     transform: translateX(-50%);
 }
 
-
+/* Lock Move Button Styling */
 .lock-move-button {
     background-color: #28a745;
     color: white;

@@ -188,45 +188,49 @@ def battle_lobby():
     logger.debug('Battle lobby route hit')
 
     global battle
-    global slays_dict, traits_dict, moves_dict
+    global battle_slays_dict, battle_traits_dict, battle_moves_dict
 
     # Reload the slays and traits dictionaries
     battle_slays_dict, battle_traits_dict, battle_moves_dict = reload_slaipedia()
 
     # Initialize the battle
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
-    battle.give_player_team_from_list(battle.player_1, ['Bulwark Crab', 'Hydrypt', 'Arson Jetbeetle', 'Lesser Helmbeetle'])
-    battle.give_player_team_from_list(battle.player_2, ['Lesser Crab', 'Bulwark Crab', 'Lesser Scorpoid', 'Lascer Crab'])
+    battle.give_player_team_from_list(battle.player1, ['Bulwark Crab'])  # 'Hydrypt', 'Arson Jetbeetle', 'Lesser Helmbeetle'])
+    battle.player1.active_slay=battle.player1.slay_team[0]
+    battle.give_player_team_from_list(battle.player2, ['Lesser Crab'])  # 'Bulwark Crab', 'Lesser Scorpoid', 'Lascer Crab'])
+    battle.player2.active_slay = battle.player2.slay_team[0]
 
-    # Debugging output
-    for slay in battle.player_1.slay_team:
-        print(slay.base_stats)
-        print(slay.current_stats)
+    battle.log_round_header(True)
 
-    # # Test with a specific Slay
-    # test_slay = Slay(battle, battle.player_1, 'Lascer Crab')
-    # print(test_slay.current_moves)
-    #
-    # # Correct the access to move_dict['name']
-    # for i, move in enumerate(test_slay.current_moves):
-    #     print(f'Move {i} is {move.move_dict["name"]}')
-    #     print(move.move_long_name)
-    #     print(move.stats_when_using)
-    #     print(move.move_properties)
-
-    # Pass the dictionaries to the template
+    # Pass the battle object to the template
     return render_template('battle_lobby.html', battle=battle)
 
 
+@app.route('/select_move/<int:move_index>', methods=['POST'])
+def select_move(move_index):
+    global battle
+
+    # Player 1 selects a move
+    battle.select_move(battle.player1, move_index)
+
+    # For now, automatically select a random move for Player 2 (AI)
+    battle.player2.choose_random_move()
+    battle.select_move(battle.player2, battle.player2.chosen_move_index)
+
+    # Execute the round after both players have selected their moves
+    battle.execute_round()
+
+    return redirect(url_for('battle'))
+
 @app.route('/battle')
 def battle():
-    return render_template('battle.html', slays_dict=slays_dict, traits_dict=traits_dict)
+    return render_template('battle.html', battle=battle)
 
 
 @app.route('/lock_in_move')
 def lock_in_move():
     pass
 
+
 if __name__ == '__main__':
-    slays_dict, traits_dict, moves_dict = reload_slaipedia()
     app.run(debug=True)

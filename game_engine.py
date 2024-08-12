@@ -8,26 +8,32 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+# BATTLE CLASS ---------------------------------------------------------------------------------------------------------
 class Battle:
-    def __init__(self, mode, slays_dict, traits_dict, moves_dict=None, move_handler=None, player_1_name='Player 1',
-                 player_2_name='Opponent'):
-        self.player_1 = Player(player_1_name)
-        self.player_2 = Player(player_2_name)
+    def __init__(self, mode, slays_dict, traits_dict, moves_dict=None, move_handler=None, player1_name='Player 1',
+                 player2_name='Opponent'):
+        self.player1 = Player(player1_name)
+        self.player2 = Player(player2_name)
+
         self.battle_slays_dict = slays_dict
         self.slays_list = list(self.battle_slays_dict.keys())
         self.battle_traits_dict = traits_dict
         self.battle_moves_dict = moves_dict
-        self.round_count = 0
-        self.round_log = []
-        self.log = []
         self.move_handler = move_handler
+
+        self.log = []
+        self.game_over = False
+
+        self.round_counter = 1
+        self.round_log = []
+        self.turn_order = []  # To store the order of actions in the round
 
         # if mode == 'vs Computer':
         #     pass
         # elif mode == 'Multiplayer':
         #     pass
 
-
+    # Player Handling
     def get_random_team_name_list(self, n):
         return random.sample(self.slays_list, n)
 
@@ -45,15 +51,143 @@ class Battle:
             name,
         ) for name in list_slay_names]
 
+    def trigger_event(self, event_type, user=None, target=None, attacker=None, defender=None, player=None):
+        pass
 
+    # Round Handling
+    def execute_round(self):
+        # Initialize the round to determine the order of actions
+        self.round_phase_action_select()
+
+        # Execute each move in the determined order
+        for attacker, move, defender in self.turn_order:
+            if not attacker.check_is_dead():
+                self.execute_move(attacker, move, defender)
+
+                # After each move, check if the defender is still able to act
+                if defender.check_is_dead():
+                    self.round_log.append(f"{defender.p_name} fuckin died!")
+                    break  # Stop further actions if a Slay faints
+
+        # End the round, handle any post-round logic, check for fainted Slays
+        self.end_round()
+
+    def select_move(self, player, move_index):
+        player.chosen_move_index = move_index
+        move = player.active_slay.current_moves[move_index]
+        self.log.append(f"{player.name} selected {move.move_long_name}.")
+
+    def log_round_header(self, first_round=False):
+        if first_round:
+            round_counter = 1
+        else:
+            round_counter = self.round_counter
+        self.log.append(f"<div class='turn-heading'>Round {round_counter}</div>")
+        logging.info(f"------------ ROUND {round_counter} ------------")
+
+    def round_phase_action_select(self):
+        # Clear previous round's log
+
+        # Get the selected moves and their speeds
+        player1_move = self.player1.active_slay.current_moves[self.player1.chosen_move_index]
+        player2_move = self.player2.active_slay.current_moves[self.player2.chosen_move_index]
+
+        # Determine turn order based on move speed
+        # [step 1, step 2]: [(user, move, target), (user, move, target)]
+        if player1_move.stats_when_using['SPE'] >= player2_move.stats_when_using['SPE']:
+            self.round_log.append(f"{self.player1.active_slay.p_name}'s move is faster than "
+                                  f"{self.player2.active_slay.p_name}")
+            self.turn_order = [(self.player1.active_slay, player1_move, self.player2.active_slay), (self.player2.active_slay, player2_move, self.player1.active_slay,)]
+        else:
+            self.round_log.append(f"{self.player1.active_slay.p_name}'s move is faster than "
+                                  f"{self.player2.active_slay.p_name}")
+            self.turn_order = [(self.player2.active_slay, player2_move, self.player1.active_slay,), (self.player1.active_slay, player1_move, self.player2.active_slay)]
+
+        logging.info(f"Turn order set: {[(p.name, m.move_long_name) for p, m, _ in self.turn_order]}")
+
+    def execute_move(self, user, move, target):
+        # Handle the move execution
+        self.round_log.append(f"{user.p_name} used {move.move_long_name} on {target.p_name}.")
+        logging.debug(f"{user.p_name} uses {move.move_long_name} on {target.p_name}")
+        damage = move.move_properties['POWER']
+        target.take_damage(damage)
+        self.round_log.append(f"{target.p_name} health is now {target.current_stats['health']}.")
+
+        # Trigger an event (optional, based on your game design)
+        self.trigger_event('DamageTakenEvent', target, damage)
+
+        # Apply any move-specific effects (status, buffs, debuffs, etc.)
+        # For example:
+        # if move.has_status_effect():
+        #     target.apply_status_effect(move.status_effect)
+
+    def execute_switch(self, player, new_slay):
+        pass
+        # player.active_slay = new_slay
+        # logging.debug(f"{player.name} switched to {new_slay.nickname}")
+        # self.trigger_event('SwitchSelectedEvent', player, new_slay)
+
+    def end_round(self):
+        # Check if any Slays have fainted and handle the aftermath
+        # self.check_for_fainted_slays()
+
+        # Check if the game is over and determine the winner
+        self.check_game_over()
+
+        if self.game_over:
+            self.log.append(f"<div class='turn-heading'>Simulation Ended</div>")
+        else:
+            logging.info(f"------ END of ROUND {self.round_counter} ------")
+            self.round_counter += 1
+            self.log_round_header()
+
+        if self.round_log:
+            self.log.extend(self.round_log)
+            self.round_log = []
+
+    def check_game_over(self):
+        # Initially assume both players' teams are dead
+        player1_team_dead = True
+        player2_team_dead = True
+
+        # Check if any "slay" in player 1's team is alive
+        for slay in self.player1.slay_team:
+            if not slay.check_is_dead():
+                player1_team_dead = False
+                break  # No need to check further if at least one is alive
+
+        # Check if any "slay" in player 2's team is alive
+        for slay in self.player2.slay_team:
+            if not slay.check_is_dead():
+                player2_team_dead = False
+                break  # No need to check further if at least one is alive
+
+        if player1_team_dead or player2_team_dead:
+            self.game_over = True
+            if player1_team_dead and player2_team_dead:
+                self.round_log.append(f"<div class='lose'>Draw! Both Players are Defeated</div>")
+                logger.debug(f"Draw! Both Players Lose")
+            elif player1_team_dead:
+                self.round_log.append(f"<div class='win'>{self.player2.name} is Victorious!</div>")
+                logger.debug(f"{self.player1.name} Lost!")
+            elif player2_team_dead:
+                self.round_log.append(f"<div class='win'>{self.player1.name} is Victorious!</div>")
+                logger.debug(f"{self.player2.name} Lost!")
+
+
+
+# PLAYER CLASS ---------------------------------------------------------------------------------------------------------
 class Player:
     def __init__(self, name):
         self.name = name
         self.slay_prototypes = []
         self.slay_team = []
         self.active_slay = None
+
         self.primordial_biomass = 0
         self.player_effects = []
+
+        self.chosen_move_index = 0
 
 
     def reset_prototypes(self):
@@ -70,16 +204,22 @@ class Player:
     def resorb_slay(self, slay):
         pass
 
+    def choose_random_move(self):
+        self.chosen_move_index = random.randint(0, len(self.active_slay.current_moves) - 1)
 
+
+# SLAY CLASS -----------------------------------------------------------------------------------------------------------
 class Slay:
     def __init__(self, battle, player, name, nickname=None):
         self.battle = battle
         self.player = player
         self.name = name
+        self.is_dead = False
         logger.info(f'{name} slay created for {player.name}')
         if nickname is None:
             self.nickname = f"{name} {len(self.player.slay_team)}"
         logger.info(f'   Nickname is: {self.nickname} ')
+        self.p_name = f"{player.name}'s {self.nickname}"
         self.turns_alive = 0
         self.effects = []
         slay_species_dict = battle.battle_slays_dict[name]
@@ -93,20 +233,16 @@ class Slay:
             'DUR': slay_species_dict['body_durability'],
             'SPE': slay_species_dict['body_speed'],
         }
-        self.current_stats = self.base_stats
+        self.current_stats = self.base_stats.copy()
         print(slay_species_dict)
         self.base_traits = slay_species_dict['species_traits']
         self.base_moves = []
 
-        print(f'Stas before traits{self.base_stats}')
-
         self.compute_stats_from_traits(self.base_stats)
         self.populate_moves_from_traits()
 
-        print(f'Stas after traits{self.base_stats}')
-
-        self.current_traits = self.base_traits
-        self.current_moves = self.base_moves
+        self.current_traits = self.base_traits.copy()
+        self.current_moves = self.base_moves.copy()
 
     def compute_stats_from_traits(self, stats):
         # dont forget minimums
@@ -192,7 +328,6 @@ class Slay:
                     move = self.pre_add_move('Bludgeon', trait)
                     self.add_move(move, trait_quality_augment)
 
-
     def pre_add_move(self, move_name, trait=None, is_body_move=False):
 
         move = Move(self.battle.battle_moves_dict[move_name])
@@ -215,9 +350,22 @@ class Slay:
             move.move_properties['PIERCE'] += trait_quality_augment['PIERCE']
         self.base_moves.append(move)
 
-
     def determine_move_results(self, move, target):
         pass
+
+    def take_damage(self, damage, quality='Direct'):
+        logger.debug(f"base is {self.base_stats['health']}")
+        if damage >= 0.1:
+            self.battle.round_log.append(f"{self.p_name} took {damage} {quality.lower()} damage.")
+        elif damage <= -0.1:
+            self.battle.round_log.append(f"{self.p_name} gained {damage} health.")
+        else:
+            damage = 0
+            self.battle.round_log.append(f"{self.p_name} took no {quality.lower()} damage.")
+        self.current_stats['health'] -= damage
+        logger.debug(f"{self.p_name} takes {damage} {quality.lower()} damage.")
+        logger.debug(f"base is {self.base_stats['health']}")
+        logger.debug(f"current is {self.current_stats['health']}")
 
     def get_effect(self, effect):
         pass
@@ -225,7 +373,39 @@ class Slay:
     def new_round(self):
         pass
 
+    def check_is_dead(self):
+        if self.current_stats['health'] <= 0:
+            self.is_dead = True
+            return True
+        else:
+            self.is_dead = False
+            return False
 
+
+# MOVE CLASS -----------------------------------------------------------------------------------------------------------
+class Move:
+    def __init__(self, move_dict):
+        self.move_dict = move_dict
+        self.move_long_name = ''
+        self.parent_trait = ''
+        self.stats_when_using = {
+            'STR': 0,
+            'HAR': 0,
+            'DUR': 0,
+            'SPE': 0,
+        }
+        self.move_properties = {
+            'POWER': move_dict['power'],
+            'RECOIL': move_dict['recoil'],
+            'BLUNT': move_dict['blunt_quality'],
+            'CUT': move_dict['cut_quality'],
+            'PIERCE': move_dict['pierce_quality']
+        }
+        self.self_effects = []
+        self.target_effects = []
+
+
+# Helper Functions
 def get_stats_when_using(slay, is_body_move, trait_dict=None):
     slay_stats = slay.current_stats
     if trait_dict:
@@ -284,242 +464,4 @@ def get_trait_quality_augment(trait_tags=None):
             trait_quality_augment['PIERCE'] += 1
 
     return trait_quality_augment
-
-
-
-class Move:
-    def __init__(self, move_dict):
-        self.move_dict = move_dict
-        self.move_long_name = ''
-        self.parent_trait = ''
-        self.stats_when_using = {
-            'STR': 0,
-            'HAR': 0,
-            'DUR': 0,
-            'SPE': 0,
-        }
-        self.move_properties = {
-            'POWER': move_dict['power'],
-            'RECOIL': move_dict['recoil'],
-            'BLUNT': move_dict['blunt_quality'],
-            'CUT': move_dict['cut_quality'],
-            'PIERCE': move_dict['pierce_quality']
-        }
-        self.self_effects = []
-        self.target_effects = []
-
-
-
-# class Slay:
-#     def __init__(self, name, health, strength, hardness, durability, speed, moves, abilities):
-#         self.name = name
-#         self.image = self.generate_image_filename()
-#
-#         self.base_max_health = health
-#
-#         # Base stats
-#         self.base_strength = strength
-#         self.base_hardness = hardness
-#         self.base_durability = durability
-#         self.base_speed = speed
-#         self.base_moves = moves
-#         self.base_abilities = abilities
-#
-#         # Current stats
-#         self.max_health = self.base_max_health
-#         self.health = self.max_health
-#         self.strength = self.base_strength
-#         self.hardness = self.base_hardness
-#         self.durability = self.base_durability
-#         self.speed = self.base_speed
-#         self.moves = self.base_moves
-#         self.battle_moves_dict = convert_moves_to_dict(moves)
-#         self.abilities = self.base_abilities
-#
-#     def generate_image_filename(self):
-#         return f"{self.name.lower().replace(' ', '_')}.png"
-#
-#
-#     def take_damage(self, damage):
-#         self.health -= damage
-#         if self.health < 0.1:
-#             self.health = 0
-#         if self.health > self.max_health:
-#             self.health = self.max_health
-#         if damage >= 0:
-#             logger.debug(f"{self.name} will take {damage:.1f} damage, health is now {self.health:.1f}")
-#         else:
-#             logger.debug(f"{self.name} will heal {-damage:.1f} health")
-#
-#     def is_fainted(self):
-#         return self.health < 0.1
-#
-#     def reset_to_base(self):
-#         self.max_health = self.base_max_health
-#         self.health = self.max_health
-#         self.strength = self.base_strength
-#         self.hardness = self.base_hardness
-#         self.durability = self.base_durability
-#         self.speed = self.base_speed
-#         self.moves = self.base_moves
-#         logger.debug(f"{self.name} reset completely")
-#
-# class Player:
-#     def __init__(self, name, slays):
-#         self.name = name
-#         self.slays = slays
-#         self.active_slay = slays[0]  # Start with the first Slay in the team
-#         self.chosen_action = None
-#         self.chosen_move_index = None
-#         self.chosen_switch_index = None
-#
-#     def reset_actions(self):
-#         self.chosen_action = None
-#         self.chosen_move_index = None
-#         self.chosen_switch_index = None
-#
-#     def switch_slay(self):
-#         if self.chosen_switch_index < len(self.slays):
-#             self.active_slay = self.slays[self.chosen_switch_index]
-#
-#     def switch_next_living_slay(self):
-#         for i, slay in enumerate(self.slays):
-#             if not slay.is_fainted():
-#                 self.chosen_switch_index = i
-#                 logging.debug(f"{self.name} will switch to slay #{i}")
-#                 self.switch_slay()
-#                 return
-#             logging.debug(f"{slay.name} is dead, cannot switch")
-#         logging.debug(f"{self.name} has no remaining Slays to switch to")
-#
-#
-#     def is_defeated(self):
-#         return all(slay.is_fainted() for slay in self.slays)
-#
-# class Battle:
-#     def __init__(self, player1, player2, move_handler):
-#         self.player1 = player1
-#         self.player2 = player2
-#         self.round_count = 0
-#         self.round_log = []
-#         self.log = []
-#         self.move_handler = move_handler
-#
-#     def slay_move(self, attacker, defender, move, attacker_prefix, defender_prefix):
-#         self.move_handler.slay_move(attacker, defender, move, attacker_prefix, defender_prefix, self.round_log)
-#
-#     def player_action_move(self, player, move_index):
-#         self.player1_move = player.active_slay.moves[move_index]
-#         self.player1_switch = None
-#         logging.debug(f"{player.name} selected move: {self.player1_move}")
-#
-#
-#     # def opponent_action_move(self, opponent):
-#     #     if opponent.active_slay.is_fainted():
-#     #         self.opponent_action_switch(opponent)
-#     #     else:
-#     #         self.player2_move = random.choice(opponent.active_slay.moves)
-#     #         self.player2_switch = None
-#     #         logging.debug(f"{opponent.name} selected move: {self.player2_move}")
-#     #
-#     # def opponent_action_switch(self, opponent):
-#     #     for i, slay in enumerate(opponent.slays):
-#     #         if not slay.is_fainted():
-#     #             self.player2_switch = i
-#     #             self.player2_move = None
-#     #             self.round_log.append(f"{opponent.name} switched to {slay.name}")
-#     #             logging.debug(f"{opponent.name} switched to {slay.name}")
-#     #             return
-#     #     logging.debug(f"{opponent.name} has no remaining Slays to switch to")
-#
-#     def execute_round(self):
-#         self.round_log = []
-#         self.round_count += 1
-#         self.log.append(f"<div class='turn-heading'>Round {self.round_count}</div>")
-#         logging.info(f"------------ ROUND {self.round_count} ------------")
-#
-#         # Select random action for opponent
-#         self.player2.chosen_action = 'Move'
-#         self.player2.chosen_move_index = random.randint(0, len(self.player2.active_slay.moves)-1)
-#
-#
-#         if self.player1.chosen_action == 'Move':
-#             logging.debug(f"{self.player1.name} chose to have {self.player1.active_slay.name} use move #{self.player1.chosen_move_index} ({self.player1.active_slay.moves[self.player1.chosen_move_index]})")
-#         elif self.player1.chosen_action == 'Switch':
-#             logging.debug(f"{self.player1.name} chose to switch {self.player1.active_slay.name} to {self.player1.slays[self.player1.chosen_switch_index].name}")
-#
-#         if self.player2.chosen_action == 'Move':
-#             logging.debug(f"{self.player2.name} chose to have {self.player2.active_slay.name} use move #{self.player2.chosen_move_index} ({self.player2.active_slay.moves[self.player2.chosen_move_index]})")
-#         elif self.player2.chosen_action == 'Switch':
-#             logging.debug(f"{self.player2.name} chose to switch {self.player2.active_slay.name} to {self.player2.slays[self.player2.chosen_switch_index].name}")
-#
-#
-#         # Switch Phase
-#         if self.player1.chosen_action == 'Switch':  # Switch Player 1
-#             self.player1.switch_slay()
-#             logging.debug(f"{self.player1.name} switched to {self.player1.active_slay.name}")
-#
-#         if self.player2.chosen_action == 'Switch':  # Switch Player 1
-#             self.player2.switch_slay()
-#             logging.debug(f"{self.player2.name} switched to {self.player2.active_slay.name}")
-#
-#         # Combat Phase
-#         # turn_order list - 1:[Attacker, Defender], 2:[Attacker, Defender]
-#         if self.player1.active_slay.speed >= self.player2.active_slay.speed:
-#             self.log.append(
-#                 f"{self.player1.name}'s {self.player1.active_slay.name} is faster than {self.player2.name}'s {self.player2.active_slay.name}")
-#             turn_order = [[self.player1, self.player2],[self.player2, self.player1]]
-#         else:
-#             self.log.append(
-#                 f"{self.player2.name}'s {self.player2.active_slay.name} is faster than {self.player1.name}'s {self.player1.active_slay.name}")
-#             turn_order = [[self.player2, self.player1], [self.player1, self.player2]]
-#
-#         for attacker_defender in turn_order:
-#             attacker, defender = attacker_defender
-#             if attacker.chosen_action == 'Move':  # Catches if switching
-#                 logging.debug(
-#                     f"{attacker.name} selected index: {attacker.chosen_move_index} from move list len {len(attacker.active_slay.moves)}, slay is {attacker.active_slay.name}")
-#
-#                 chosen_move = attacker.active_slay.moves[attacker.chosen_move_index]
-#                 self.slay_move(attacker.active_slay, defender.active_slay, chosen_move, f"{attacker.name}'s",
-#                                f"{defender.name}'s")
-#
-#                 # Handle slay death
-#                 if attacker.active_slay.is_fainted() and defender.active_slay.is_fainted():
-#                     self.round_log.append(
-#                         f"Both slays died! Yeesh!")
-#                     break
-#                 elif attacker.active_slay.is_fainted():
-#                     self.round_log.append(f"{attacker.name}'s {attacker.active_slay.name} died!")
-#                     break
-#                 elif defender.active_slay.is_fainted():
-#                     self.round_log.append(f"{defender.name}'s {defender.active_slay.name} died!")
-#                     break
-#
-#         # Check win condition, otherwise switch
-#         if not self.player1.is_defeated() or not self.player2.is_defeated():
-#             if self.player1.active_slay.is_fainted():
-#                 self.player1.switch_next_living_slay()
-#                 self.round_log.append(f"{self.player1.name} switched to {self.player1.active_slay.name}")
-#             if self.player2.active_slay.is_fainted():
-#                 self.player2.switch_next_living_slay()
-#                 self.round_log.append(f"{self.player2.name} switched to {self.player2.active_slay.name}")
-#
-#         self.end_round()
-#
-#
-#     def end_round(self):
-#         if self.round_log:
-#             self.log.extend(self.round_log)
-#             self.round_log = []
-#         if self.is_battle_over():
-#             self.turn = 'over'
-#         else:
-#             logging.info(f"------ END of ROUND {self.round_count} ------")
-#             self.player1.reset_actions()
-#             self.player2.reset_actions()
-#             self.turn = 'player'
-#
-#     def is_battle_over(self):
-#         return self.player1.is_defeated() or self.player2.is_defeated()
 

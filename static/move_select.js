@@ -1,20 +1,22 @@
-// MOVE SELECT
+// move_select.js
 document.addEventListener('DOMContentLoaded', function () {
     const moveButtons = document.querySelectorAll('.move-option');
-    const selectedMoveInput = document.getElementById('selected_move_input');
 
     moveButtons.forEach(button => {
         button.addEventListener('click', function () {
-            // Remove the 'selected' class from all buttons
             moveButtons.forEach(btn => btn.classList.remove('selected'));
-
-            // Add the 'selected' class to the clicked button
             this.classList.add('selected');
 
-            // Set the hidden input's value to the selected move's data-move value
-            selectedMoveInput.value = this.getAttribute('data-move');
+            const moveIndex = this.getAttribute('data-move-index');
+
+            // Send the selected move to the server via an AJAX request
+            fetch(`/select_move/${moveIndex}`, { method: 'POST' })
+                .then(response => response.text())
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                });
         });
     });
 });
-
-
