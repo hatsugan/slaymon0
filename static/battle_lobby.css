@@ -55,13 +55,6 @@ h1, h2, h3 {
     width: 100%; /* Ensure the name spans the full width */
 }
 
-.slay-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid with minimum column width */
-    grid-gap: 20px; /* Space between cards */
-    width: 100%; /* Ensure the grid takes full width */
-    justify-items: center; /* Center the grid items */
-}
 
 
 .battle-log h2 {

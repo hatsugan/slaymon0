@@ -54,6 +54,25 @@ class Battle:
     def trigger_event(self, event_type, user=None, target=None, attacker=None, defender=None, player=None):
         pass
 
+    def log_round_log(self, f_string, style='None'):
+        if style == 'None':
+            f_string_wrapped = f_string
+        elif style == 'minor':
+            f_string_wrapped = "<div class='minor'>" + f_string + "</div>"
+        elif style == 'major':
+            f_string_wrapped = "<div class='major'>" + f_string + "</div>"
+        self.round_log.append(f_string_wrapped)
+
+
+    def log_round_header(self, first_round=False):
+        if first_round:
+            round_counter = 1
+        else:
+            round_counter = self.round_counter
+        self.log.append(f"<div class='turn-heading'>Round {round_counter}</div>")
+        logging.info(f"------------ ROUND {round_counter} ------------")
+
+
     # Round Handling
     def execute_round(self):
         # Initialize the round to determine the order of actions
@@ -66,7 +85,7 @@ class Battle:
 
                 # After each move, check if the defender is still able to act
                 if defender.check_is_dead():
-                    self.round_log.append(f"{defender.p_name} fuckin died!")
+                    self.log_round_log(f"{defender.p_name} fuckin died!", 'major')
                     break  # Stop further actions if a Slay faints
 
         # End the round, handle any post-round logic, check for fainted Slays
@@ -75,15 +94,7 @@ class Battle:
     def select_move(self, player, move_index):
         player.chosen_move_index = move_index
         move = player.active_slay.current_moves[move_index]
-        self.log.append(f"{player.name} selected {move.move_long_name}.")
-
-    def log_round_header(self, first_round=False):
-        if first_round:
-            round_counter = 1
-        else:
-            round_counter = self.round_counter
-        self.log.append(f"<div class='turn-heading'>Round {round_counter}</div>")
-        logging.info(f"------------ ROUND {round_counter} ------------")
+        self.log_round_log(f"{player.name} selected {move.move_long_name}.", 'minor')
 
     def round_phase_action_select(self):
         # Clear previous round's log
@@ -95,23 +106,23 @@ class Battle:
         # Determine turn order based on move speed
         # [step 1, step 2]: [(user, move, target), (user, move, target)]
         if player1_move.stats_when_using['SPE'] >= player2_move.stats_when_using['SPE']:
-            self.round_log.append(f"{self.player1.active_slay.p_name}'s move is faster than "
-                                  f"{self.player2.active_slay.p_name}")
+            self.log_round_log(f"{self.player2.active_slay.p_name}'s move is faster than "
+                                  f"{self.player1.active_slay.p_name}'s", 'minor')
             self.turn_order = [(self.player1.active_slay, player1_move, self.player2.active_slay), (self.player2.active_slay, player2_move, self.player1.active_slay,)]
         else:
-            self.round_log.append(f"{self.player1.active_slay.p_name}'s move is faster than "
-                                  f"{self.player2.active_slay.p_name}")
+            self.log_round_log(f"{self.player2.active_slay.p_name}'s move is faster than "
+                                  f"{self.player1.active_slay.p_name}'s", 'minor')
             self.turn_order = [(self.player2.active_slay, player2_move, self.player1.active_slay,), (self.player1.active_slay, player1_move, self.player2.active_slay)]
 
         logging.info(f"Turn order set: {[(p.name, m.move_long_name) for p, m, _ in self.turn_order]}")
 
     def execute_move(self, user, move, target):
         # Handle the move execution
-        self.round_log.append(f"{user.p_name} used {move.move_long_name} on {target.p_name}.")
+        self.log_round_log(f"{user.p_name} used {move.move_long_name} on {target.p_name}.", 'major')
         logging.debug(f"{user.p_name} uses {move.move_long_name} on {target.p_name}")
         damage = move.move_properties['POWER']
         target.take_damage(damage)
-        self.round_log.append(f"{target.p_name} health is now {target.current_stats['health']}.")
+        self.log_round_log(f"{target.p_name} health is now {target.current_stats['health']}.", 'minor')
 
         # Trigger an event (optional, based on your game design)
         self.trigger_event('DamageTakenEvent', target, damage)
@@ -134,6 +145,10 @@ class Battle:
         # Check if the game is over and determine the winner
         self.check_game_over()
 
+        if self.round_log:
+            self.log.extend(self.round_log)
+            self.round_log = []
+
         if self.game_over:
             self.log.append(f"<div class='turn-heading'>Simulation Ended</div>")
         else:
@@ -141,9 +156,7 @@ class Battle:
             self.round_counter += 1
             self.log_round_header()
 
-        if self.round_log:
-            self.log.extend(self.round_log)
-            self.round_log = []
+
 
     def check_game_over(self):
         # Initially assume both players' teams are dead
@@ -356,12 +369,12 @@ class Slay:
     def take_damage(self, damage, quality='Direct'):
         logger.debug(f"base is {self.base_stats['health']}")
         if damage >= 0.1:
-            self.battle.round_log.append(f"{self.p_name} took {damage} {quality.lower()} damage.")
+            self.battle.log_round_log(f"{self.p_name} took {damage} {quality.lower()} damage.", 'minor')
         elif damage <= -0.1:
-            self.battle.round_log.append(f"{self.p_name} gained {damage} health.")
+            self.battle.log_round_log(f"{self.p_name} gained {damage} health.", 'minor')
         else:
             damage = 0
-            self.battle.round_log.append(f"{self.p_name} took no {quality.lower()} damage.")
+            self.battle.log_round_log(f"{self.p_name} took no {quality.lower()} damage.", 'minor')
         self.current_stats['health'] -= damage
         logger.debug(f"{self.p_name} takes {damage} {quality.lower()} damage.")
         logger.debug(f"base is {self.base_stats['health']}")

@@ -52,14 +52,7 @@ h1, h2, h3 {
     width: 100%; /* Ensure the name spans the full width */
 }
 
-/* Slay Cards Container Styling */
-.slay-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid with minimum column width */
-    grid-gap: 20px; /* Space between cards */
-    width: 100%; /* Ensure the grid takes full width */
-    justify-items: center; /* Center the grid items */
-}
+
 
 /* Battle Log Styling */
 .battle-log {
@@ -92,6 +85,16 @@ h1, h2, h3 {
     font-weight: bold;
     text-align: center;
     font-size: 1.2em; /* Slightly larger font size */
+}
+
+.battle-log .minor {
+    font-style: italic;
+    color: #afafaf;
+    /* font-size: 0.8em; Slightly smaller font size */
+}
+
+.battle-log .major {
+    font-weight: bold;
 }
 
 .battle-log .win {

@@ -1,3 +1,21 @@
+/* Slay Cards Container Styling */
+.slay-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid with minimum column width */
+    grid-gap: 20px; /* Space between cards */
+    width: 100%; /* Ensure the grid takes full width */
+    justify-items: center; /* Center the grid items */
+}
+
+/* Mini Slay Cards Container Styling */
+.slay-cards-container-mini {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid with minimum column width */
+    grid-gap: 10px; /* Space between cards */
+    width: 100%; /* Ensure the grid takes full width */
+    justify-items: center; /* Center the grid items */
+}
+
 .slay-card {
     width: 300px;
     background-color: #f2f2f2;
@@ -8,10 +26,27 @@
     text-align: center;
 }
 
+.slay-card-mini {
+    width: 150px;
+    padding: 10px;
+    margin: 10px;
+}
+
 .slay-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.slay-header-mini {
+    font-size: medium;
+}
+
+.slay-header-mini h3 {
+    font-size: 0.8em; /* Reduce font size for mini cards */
+    margin: 0; /* Remove any default margins */
+    line-height: 1; /* Adjust line height for better spacing */
+    text-align: center; /* Center the text */
 }
 
 .biomass-bubble {
@@ -35,6 +70,16 @@
     border-radius: 10px;
 }
 
+.slay-image-mini img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+
 .health-bar {
     width: 100%;
     background-color: #e0e0e0;
@@ -45,10 +90,22 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.health-bar-mini {
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .health {
     height: 20px;
     background-color: #76c7c0;
     border-radius: 8px;
+}
+
+.health-mini {
+    height: 15px;
+    border-radius: 4px;
 }
 
 .health-text {
@@ -61,6 +118,12 @@
     line-height: 20px;
     font-weight: bold;
     color: black;
+}
+
+.health-text-mini {
+    line-height: 15px;
+    font-weight: bold;
+    font-size: small;
 }
 
 .stats {
@@ -81,18 +144,31 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.stat-mini {
+    width: 10px;
+}
+
 .stat-label {
     font-size: small;
     margin-bottom: 2px;
 }
+
 
 .stat-value {
     font-size: large;
     font-weight: bold;
 }
 
+.stat-value-mini {
+    font-size: small;
+}
+
 .stat-wide {
     width: 60px; /* Make the speed stat wider */
+}
+
+.stat-wide-mini {
+    width: 30px; /* Make the speed stat wider */
 }
 
 .traits {
@@ -118,7 +194,7 @@
 .moves {
     display: grid;
     grid-template-columns: 1fr;  /* Make each move span the full width */
-    gap: 10px;
+    gap: 5px;
     margin-top: 10px;
 }
 
