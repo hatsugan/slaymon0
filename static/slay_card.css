@@ -30,6 +30,20 @@
     width: 150px;
     padding: 10px;
     margin: 10px;
+    background-color: #f2f2f2;
+    transition: background-color 0.3s ease; /* Smooth transition */
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.slay-card-mini:hover {
+    background-color: #e0e0e0; /* Light gray on hover */
+}
+
+/* Selected State */
+.slay-card-mini.selected {
+    background-color: #28a745; /* Green background for selected slay */
+    color: white; /* Optional: Change text color to white for better contrast */
 }
 
 .slay-header {

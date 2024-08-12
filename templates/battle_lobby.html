@@ -27,9 +27,9 @@
 
             <div class="player2-section">
                 <div class="player_name">{{battle.player2.name}}'s Team</div>
-                <div class="slay-cards-container-mini">
+                <div class="slay-cards-container">
                     {% for slay in battle.player2.slay_team %}
-                        {% include 'slay_card_mini.html' %}
+                        {% include 'slay_card_full.html' %}
                     {% endfor %}
                 </div>
             </div>

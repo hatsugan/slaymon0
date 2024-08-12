@@ -23,10 +23,10 @@
 
                 <!-- Team Header -->
                 <div class="team-header">Team</div>
-
                 <!-- Mini Slay Cards Container -->
                 <div class="slay-cards-container-mini">
                     {% for team_slay in battle.player1.slay_team %}
+                        {% set slay_index = loop.index0 %}
                         {% include 'slay_card_mini.html' %}
                     {% endfor %}
                 </div>

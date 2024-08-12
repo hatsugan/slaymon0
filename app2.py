@@ -197,7 +197,7 @@ def battle_lobby():
     battle = Battle('vs Computer', battle_slays_dict, battle_traits_dict, battle_moves_dict)
     battle.give_player_team_from_list(battle.player1, ['Bulwark Crab', 'Hydrypt', 'Arson Jetbeetle', 'Lesser Helmbeetle'])
     battle.player1.active_slay=battle.player1.slay_team[0]
-    battle.give_player_team_from_list(battle.player2, ['Lesser Crab'])  # 'Bulwark Crab', 'Lesser Scorpoid', 'Lascer Crab'])
+    battle.give_player_team_from_list(battle.player2, ['Lesser Crab', 'Bulwark Crab', 'Lesser Scorpoid', 'Lascer Crab'])
     battle.player2.active_slay = battle.player2.slay_team[0]
 
     battle.log_round_header(True)
@@ -227,9 +227,17 @@ def battle():
     return render_template('battle.html', battle=battle)
 
 
-@app.route('/lock_in_move')
-def lock_in_move():
-    pass
+@app.route('/switch_slay/<int:slay_index>', methods=['POST'])
+def switch_slay(slay_index):
+    global battle
+
+    # Switch the active slay for Player 1 (or adjust for the correct player)
+    if slay_index < len(battle.player1.slay_team):
+        battle.player1.active_slay = battle.player1.slay_team[slay_index]
+
+        battle.log_round_log(f"{battle.player1.name} switched to {battle.player1.active_slay.nickname}.", 'major')
+
+    return redirect(url_for('battle'))
 
 
 if __name__ == '__main__':
