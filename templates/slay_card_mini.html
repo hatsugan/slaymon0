@@ -1,13 +1,13 @@
 <div class="slay-card slay-card-mini">
     <!-- Slay Name and Biomass -->
     <div class="slay-header slay-header-mini">
-        <h3>{{ slay.nickname }}</h3>
+        <h3>{{ team_slay.nickname }}</h3>
     </div>
 
     <!-- Slay Image -->
     <div class="slay-image slay-image-mini">
-        {% if slay.name %}
-            <img src="{{ url_for('static', filename='images/' + (slay.name|lower) + '.png') }}" alt="{{ slay.name }} Image Missing">
+        {% if team_slay.name %}
+            <img src="{{ url_for('static', filename='images/' + (team_slay.name|lower) + '.png') }}" alt="{{ team_slay.name }} Image Missing">
         {% else %}
             <img src="{{ url_for('static', filename='images/default.png') }}" alt="Default Image">
         {% endif %}
@@ -15,26 +15,26 @@
 
     <!-- Health Bar -->
     <div class="health-bar healh-bar-mini">
-        <div class="health health-mini" style="width:{{ slay.current_stats['health'] / slay.base_stats['health'] * 100 }}%;"></div>
-        <div class="health-text health-text-mini">{{ "%.1f" % slay.current_stats['health'] }}</div>
+        <div class="health health-mini" style="width:{{ team_slay.current_stats['health'] / team_slay.base_stats['health'] * 100 }}%;"></div>
+        <div class="health-text health-text-mini">{{ "%.1f" % team_slay.current_stats['health'] }}</div>
     </div>
 
     <!-- Stats Grid -->
     <div class="stats">
         <div class="stat stat-mini-wide">
-            <div class="stat-value stat-value-mini">{{ slay.current_stats['biomass'] }}</div>
+            <div class="stat-value stat-value-mini">{{ team_slay.current_stats['biomass'] }}</div>
         </div>
         <div class="stat stat-mini">
-            <div class="stat-value stat-value-mini">{{ slay.current_stats['STR'] }}</div>
+            <div class="stat-value stat-value-mini">{{ team_slay.current_stats['STR'] }}</div>
         </div>
         <div class="stat stat-mini">
-            <div class="stat-value stat-value-mini">{{ slay.current_stats['HAR'] }}</div>
+            <div class="stat-value stat-value-mini">{{ team_slay.current_stats['HAR'] }}</div>
         </div>
         <div class="stat stat-mini">
-            <div class="stat-value stat-value-mini">{{ slay.current_stats['DUR'] }}</div>
+            <div class="stat-value stat-value-mini">{{ team_slay.current_stats['DUR'] }}</div>
         </div>
         <div class="stat stat-mini-wide"> <!-- Add a special class for speed -->
-            <div class="stat-value stat-value-mini">{{ slay.current_stats['SPE'] }}</div>
+            <div class="stat-value stat-value-mini">{{ team_slay.current_stats['SPE'] }}</div>
         </div>
     </div>
 </div>

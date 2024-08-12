@@ -13,27 +13,58 @@
         <h1>Slaic Battle Simulation</h1>
 
         <div class="battle-area">
+            <!-- Player 1 Section -->
             <div class="player1-section">
-                <div class="player_name">{{battle.player1.name}}'s Team</div>
+                <div class="player_name">{{battle.player1.name}}'s Active Slay</div>
                 <div class="slay-cards-container">
-                    {% for slay in battle.player1.slay_team %}
-                        {% include 'slay_card_full.html' %}
+                    {% set slay = battle.player1.active_slay %}
+                    {% include 'slay_card_full.html' %}
+                </div>
+
+                <!-- Team Header -->
+                <div class="team-header">Team</div>
+
+                <!-- Mini Slay Cards Container -->
+                <div class="slay-cards-container-mini">
+                    {% for team_slay in battle.player1.slay_team %}
+                        {% include 'slay_card_mini.html' %}
                     {% endfor %}
                 </div>
             </div>
-            <div class="battle-log" id="battle-log">
-                <h2>Battle Log</h2>
-                <ul>
-                    {% for entry in battle.log %}
-                    <li>{{ entry|safe }}</li>
-                    {% endfor %}
-                </ul>
+
+            <!-- Battle Log and Action Buttons -->
+            <div class="log-and-actions">
+                <div class="battle-log" id="battle-log">
+                    <h2>Battle Log</h2>
+                    <ul>
+                        {% for entry in battle.log %}
+                        <li>{{ entry|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="actions">
+                    <button class="confirm-move-button" id="confirm-move-button" disabled>CONFIRM MOVE</button>
+                    <button class="switch-button" id="switch-button">SWITCH</button>
+                </div>
             </div>
+
+            <!-- Player 2 Section -->
             <div class="player2-section">
-                <div class="player_name">{{battle.player2.name}}'s Team</div>
+                <div class="player_name">{{battle.player2.name}}'s Active Slay</div>
                 <div class="slay-cards-container">
-                    {% for slay in battle.player2.slay_team %}
-                        {% include 'slay_card_full.html' %}
+                    {% set slay = battle.player2.active_slay %}
+                    {% include 'slay_card_full.html' %}
+                </div>
+
+                <!-- Team Header -->
+                <div class="team-header">Team</div>
+
+                <!-- Mini Slay Cards Container -->
+                <div class="slay-cards-container-mini">
+                    {% for team_slay in battle.player2.slay_team %}
+                        {% include 'slay_card_mini.html' %}
                     {% endfor %}
                 </div>
             </div>

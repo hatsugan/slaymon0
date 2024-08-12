@@ -52,18 +52,39 @@ h1, h2, h3 {
     width: 100%; /* Ensure the name spans the full width */
 }
 
+/* Team Header Styling */
+.team-header {
+    background-color: #6e6e6e;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: block;
+    margin-top: 20px; /* Space above the team header */
+    margin-bottom: 10px; /* Space below the team header */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 100%; /* Ensure the header spans the full width */
+}
 
+/* Container for Battle Log and Actions */
+.log-and-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%; /* Adjust width as needed */
+}
 
 /* Battle Log Styling */
 .battle-log {
-    width: 40%; /* Adjust as needed */
-    max-height: 600px; /* Set the desired height for the log */
+    width: 100%; /* Full width inside the log-and-actions container */
+    max-height: 400px; /* Set the desired height for the log */
     overflow-y: auto; /* Enable vertical scrolling */
-    margin: 0 20px; /* Add margin between players and battle log */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
+    margin-bottom: 20px; /* Add space below the log */
 }
 
 .battle-log h2 {
@@ -141,17 +162,87 @@ h1, h2, h3 {
     transform: translateX(-50%);
 }
 
-/* Lock Move Button Styling */
-.lock-move-button {
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
+/* Container for the action buttons */
+.actions {
+    display: flex;
+    justify-content: center;  /* Center the buttons horizontally */
+    gap: 20px;                /* Space between the buttons */
 }
 
-.lock-move-button:hover {
-    background-color: #218838;
+/* Common styling for both buttons */
+.actions button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
+}
+
+/* Styling for the CONFIRM MOVE button */
+.confirm-move-button {
+    background-color: #28a745;
+    color: white;
+    position: relative; /* Required for the tooltip positioning */
+}
+
+.confirm-move-button:disabled {
+    background-color: #b3e6b3; /* Lighter green to indicate disabled state */
+    cursor: not-allowed;       /* Show not-allowed cursor when disabled */
+}
+
+/* Tooltip text when the button is disabled and hovered */
+.confirm-move-button:disabled::after {
+    content: "Select a Move"; /* The tooltip text */
+    position: absolute;
+    top: 50%;  /* Position in the middle vertically */
+    left: 50%; /* Position in the middle horizontally */
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75); /* Dark background for the tooltip */
+    color: #fff; /* White text color */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    display: none; /* Hidden by default */
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.confirm-move-button:disabled:hover::after {
+    display: block; /* Show the tooltip on hover */
+}
+
+/* Styling for the SWITCH button */
+.switch-button {
+    background-color: #007bff;
+    color: white;
+    position: relative; /* Required for the tooltip positioning */
+}
+
+.switch-button:disabled {
+    background-color: #b3d9ff; /* Lighter blue to indicate disabled state */
+    cursor: not-allowed;       /* Show not-allowed cursor when disabled */
+}
+
+/* Tooltip text when the button is disabled and hovered */
+.switch-button:disabled::after {
+    content: "Select a Slay in your team"; /* The tooltip text */
+    position: absolute;
+    top: 50%;  /* Position in the middle vertically */
+    left: 50%; /* Position in the middle horizontally */
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75); /* Dark background for the tooltip */
+    color: #fff; /* White text color */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    display: none; /* Hidden by default */
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.switch-button:disabled:hover::after {
+    display: block; /* Show the tooltip on hover */
 }
